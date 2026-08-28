@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
+
+# Superpowers runtime state; keep generated HTML demos as project evidence
+.superpowers/brainstorm/.last-*
+.superpowers/brainstorm/*/state/

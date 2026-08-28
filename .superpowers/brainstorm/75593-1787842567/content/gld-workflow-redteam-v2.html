@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GLD Plugin Workflow · Red Team v2</title>
+  <style>
+    :root{--bg:#f3f1eb;--paper:#fffefa;--ink:#172033;--muted:#667085;--line:#d8dde6;--blue:#285ecf;--blue2:#eaf0ff;--green:#16745a;--green2:#e9f6f0;--amber:#9d5615;--amber2:#fff2e2;--red:#ad3b43;--red2:#fff0f1;--purple:#6b4fba;--purple2:#f2eeff;--shadow:0 18px 48px rgba(31,43,69,.10)}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 0 0,rgba(40,94,207,.11),transparent 34rem),radial-gradient(circle at 100% 20%,rgba(107,79,186,.08),transparent 31rem),var(--bg);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Noto Sans CJK SC",sans-serif;line-height:1.45}
+    .page{max-width:1540px;margin:auto;padding:32px 28px 54px}.top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.eyebrow{color:var(--red);font-size:12px;font-weight:900;letter-spacing:.14em}.top h1{font-size:clamp(32px,4.2vw,56px);line-height:1.04;letter-spacing:-.04em;margin:8px 0}.top p{max-width:900px;color:var(--muted);margin:0;font-size:16px}.badge{flex:none;border:1px solid #e3aaae;background:var(--red2);color:var(--red);font-size:11px;font-weight:900;padding:9px 12px;border-radius:999px}
+    .principle{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:23px}.principle>div{padding:12px 14px;background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:13px;font-size:12px}.principle b{display:block;margin-bottom:3px}.principle span{color:var(--muted)}
+    .panel{margin-top:24px;background:rgba(255,254,250,.95);border:1px solid #cbd1dc;border-radius:21px;box-shadow:var(--shadow);overflow:hidden}.head{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding:16px 19px}.head h2{margin:0;font-size:18px}.head p{margin:3px 0 0;color:var(--muted);font-size:12px}.tag{font-size:10px;font-weight:900;padding:6px 9px;border-radius:999px;white-space:nowrap}.tag.blue{color:var(--blue);background:var(--blue2)}.tag.purple{color:var(--purple);background:var(--purple2)}.tag.red{color:var(--red);background:var(--red2)}
+    .body{padding:18px}.firewall{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid #e6a7ab;background:var(--red2);border-radius:13px;padding:10px 13px;margin-bottom:13px;font-size:12px;color:#7c2e34}.firewall strong{font-weight:900}.firewall span{color:#9b555a}
+    .stage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stage{position:relative;border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px;min-height:128px}.stage .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;color:var(--blue);background:var(--blue2);font-weight:900;font-size:11px;margin-bottom:11px}.stage h3{margin:0 0 6px;font-size:14px}.stage p{margin:0;color:var(--muted);font-size:11px}.stage .state{display:inline-block;margin-top:9px;color:#526076;background:#f3f5f8;border-radius:8px;padding:5px 7px;font:10px ui-monospace,SFMono-Regular,Menlo,monospace}.stage.authority{border-color:#99b2e9;background:linear-gradient(180deg,#fff,#f5f8ff)}.stage.manual{border-color:#dfbd8e;background:linear-gradient(180deg,#fff,#fff9ef)}.stage.reconcile{border-color:#90c9b4;background:linear-gradient(180deg,#fff,#f3fbf7)}.stage.reconcile .n{color:var(--green);background:var(--green2)}
+    .connector{display:flex;align-items:center;justify-content:center;color:#9099a9;font-size:22px;padding:4px}.rounds{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr;align-items:stretch}.round{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff;min-height:116px}.round b{display:block;font-size:13px;margin-bottom:6px}.round p{margin:0;color:var(--muted);font-size:11px}.round .call{margin-top:9px;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--blue);background:var(--blue2);border-radius:8px;padding:6px 7px}.round .call.green{color:var(--green);background:var(--green2)}
+    .execution-states{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.execution-states span{font:10px ui-monospace,SFMono-Regular,Menlo,monospace;padding:6px 8px;border-radius:8px;background:#f2f4f7;border:1px solid #e1e5eb;color:#4d586b}.execution-states .danger{color:var(--red);background:var(--red2);border-color:#efc3c6}.execution-states .ok{color:var(--green);background:var(--green2);border-color:#b9ddcf}
+    .ruleline{margin-top:12px;border:1px dashed #c0c7d4;border-radius:12px;padding:9px 12px;color:#596579;background:#f9fafb;font-size:11px}.ruleline b{color:var(--ink)}
+    .feedback{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.fnode{border:1px solid var(--line);border-radius:14px;padding:11px;background:#fff;min-height:122px}.fnode .n{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:var(--purple2);color:var(--purple);font-size:10px;font-weight:900;margin-bottom:9px}.fnode h3{margin:0 0 5px;font-size:12px}.fnode p{margin:0;color:var(--muted);font-size:10px}.fnode.code{border-color:#a8d2c2;background:#f6fcf9}.fnode.code .n{color:var(--green);background:var(--green2)}.fnode.gate{border-color:#dab985;background:#fffaf1}.fnode.gate .n{color:var(--amber);background:var(--amber2)}
+    .branches{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.branch{border-radius:11px;padding:9px 11px;font-size:11px}.branch.stop{background:#f3f5f7;color:#566174;border:1px solid #dce1e8}.branch.go{background:var(--purple2);color:#594196;border:1px solid #cfc4f3}.async{margin-top:11px;text-align:center;border:1px dashed #b9a9ea;color:var(--purple);background:#faf8ff;border-radius:12px;padding:9px;font-size:11px;font-weight:800}
+    .risk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.risk{border:1px solid #e6b3b7;background:#fffafb;border-radius:14px;padding:12px;min-height:130px}.risk .sev{font-size:9px;font-weight:900;color:var(--red);letter-spacing:.1em}.risk h3{font-size:13px;margin:5px 0}.risk p{font-size:10px;color:var(--muted);margin:0}.risk b{color:var(--ink)}
+    .later{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.later>div{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px 13px}.later h3{font-size:12px;margin:0 0 5px}.later p{font-size:10px;color:var(--muted);margin:0}
+    .question{margin-top:25px}.question h2{font-size:20px;margin:0 0 4px}.question>p{font-size:12px;color:var(--muted);margin:0 0 12px}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.option{cursor:pointer;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.9);padding:13px;transition:.15s;min-height:97px}.option:hover{transform:translateY(-2px);border-color:#9db4e9}.option.selected{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,94,207,.13);background:#f7f9ff}.letter{float:left;width:25px;height:25px;display:grid;place-items:center;border-radius:8px;background:var(--blue2);color:var(--blue);font-weight:900;font-size:11px;margin-right:9px}.option h3{margin:2px 0 5px;font-size:13px}.option p{margin:0;color:var(--muted);font-size:11px}.rec{display:inline-block;margin-top:6px;color:var(--green);font-size:9px;font-weight:900}.foot{text-align:center;margin-top:20px;color:#7d8797;font-size:10px}
+    @media(max-width:1180px){.stage-grid,.risk-grid{grid-template-columns:1fr 1fr}.feedback{grid-template-columns:repeat(3,1fr)}.rounds{grid-template-columns:1fr}.connector{transform:rotate(90deg)}.principle{grid-template-columns:1fr}.options{grid-template-columns:1fr}}
+    @media(max-width:700px){.page{padding:20px 13px 38px}.top{display:block}.badge{display:inline-block;margin-top:13px}.stage-grid,.risk-grid,.feedback,.later{grid-template-columns:1fr}.firewall{display:block}.firewall span{display:block;margin-top:5px}}
+  </style>
+</head>
+<body>
+<main class="page">
+  <div class="top">
+    <div><div class="eyebrow">RED TEAM REVISION · WORKFLOW V2</div><h1>一个 Plugin，不是一条不会中断的调用</h1><p>人工下单与券商成交是异步外部状态。Plugin 必须能跨分钟、跨小时、跨重启恢复：先生成不可变决策卡，再反复只读对账，只有完整平仓且事实最终稳定后，才进入复盘与策略研究。</p></div>
+    <div class="badge">PRE-BUILD CRITICAL REVIEW</div>
+  </div>
+  <div class="principle">
+    <div><b>权威卡片无 LLM</b><span>程序逐字段生成；删掉全部“可选解释”。</span></div>
+    <div><b>交易后不是拉一次</b><span>Working、Partial、Cancelled、Correction 必须可重复同步。</span></div>
+    <div><b>一笔交易只产生假设</b><span>盈亏不是因果证据；“没有改进假设”是正常结果。</span></div>
+  </div>
+
+  <section class="panel">
+    <div class="head"><div><h2>闭环 1：日常决策 → 人工执行 → 可恢复对账 → 完整平仓</h2><p>同一个 Plugin，多个有界、可重复、幂等的动作。</p></div><span class="tag blue">DAILY + RECONCILIATION</span></div>
+    <div class="body">
+      <div class="firewall"><strong>Read-only Capability Firewall</strong><span>每次运行只允许一个 provider / account；禁止下单、取消、行权、静默 fallback 和跨账户拼接。</span></div>
+      <div class="stage-grid">
+        <div class="stage"><div class="n">01</div><h3>Snapshot A：决策前事实</h3><p>账户、持仓、订单、成交、GLD、期权链、交易日历；每个域必须证明时间、新鲜度、完整性和分页终点。</p><span class="state">SEALED_FACT_BUNDLE</span></div>
+        <div class="stage"><div class="n">02</div><h3>确定性 Kernel</h3><p>唯一 active 策略、风险和生命周期版本；不联网、不调用 LLM、不运行时调参。</p><span class="state">BYTE-STABLE_RESULT</span></div>
+        <div class="stage authority"><div class="n">03</div><h3>不可变权威决策卡</h3><p>四个答案、完整合约、整数数量、有效期、失效条件、退出计划与全部版本/hash。</p><span class="state">AWAITING_MANUAL_ACTION</span></div>
+        <div class="stage manual"><div class="n">04</div><h3>Jake 人工操作</h3><p>提交、改价、取消或不提交都发生在 Plugin 之外；必须把实际操作与 decision_id 建立明确关联。</p><span class="state">NO BROKER WRITE</span></div>
+      </div>
+
+      <div class="connector">↓</div>
+      <div class="rounds">
+        <div class="round"><b>动作 2：显式同步订单状态</b><p>你告诉 Plugin“我已提交，请核验”，或以后由受控调度器触发同一只读动作。</p><div class="call">reconcile(decision_id, order_ref?)</div></div>
+        <div class="connector">→</div>
+        <div class="round"><b>Snapshot B：Broker 对账</b><p>读取 orders、executions、fees 与 positions；同一 execution_id 只记账一次，成交修正采用 append-only revision。</p><div class="call green">typed reconciliation receipt</div></div>
+        <div class="connector">→</div>
+        <div class="round"><b>持仓管理与退出卡</b><p>开仓后每次决策都先管理已有 position group；建议在途仓位绑定开仓时生命周期版本，迁移需单独决定。</p><div class="call">OPEN → CLOSING</div></div>
+        <div class="connector">→</div>
+        <div class="round"><b>终局核验</b><p>无残余腿/股份、无活动订单、无待处理行权/指派，费用与成交修正稳定后才允许 CLOSED。</p><div class="call green">CLOSED_PENDING_FINALITY → CLOSED</div></div>
+      </div>
+      <div class="execution-states">
+        <span>NOT_SEEN</span><span>WORKING</span><span class="danger">PARTIAL</span><span class="ok">FILLED</span><span>CANCELLED</span><span>REJECTED</span><span class="danger">MISMATCH</span><span class="danger">UNKNOWN</span><span class="danger">MANUAL_VARIANCE</span>
+      </div>
+      <div class="ruleline"><b>硬规则：</b>“我已经提交”不等于已成交；期权数量归零也不一定等于完整平仓。PARTIAL、UNKNOWN、人工改动或账本不一致时，停止新的开仓建议并要求人工核验。</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="head"><div><h2>闭环 2：完整交易事实 → LLM 复盘 → 假设 → 独立验证 → 发布</h2><p>复盘能推动未来规则改进，但不能从单笔盈亏直接推出因果。</p></div><span class="tag purple">REVIEW + METHOD LAB</span></div>
+    <div class="body">
+      <div class="feedback">
+        <div class="fnode code"><div class="n">A</div><h3>确定性 TradeEpisode</h3><p>程序计算净盈亏、费用、滑点、持有期、MAE/MFE、执行偏差与规则遵守度。</p></div>
+        <div class="fnode"><div class="n">B</div><h3>LLM 盲结果过程审计</h3><p>先隐藏最终盈亏与未来价格，只判断当时信息下的决策和执行是否合规。</p></div>
+        <div class="fnode"><div class="n">C</div><h3>LLM 结果复盘</h3><p>再开放结果；输出 FACT / INFERENCE / HYPOTHESIS / UNKNOWN，不把推测写成原因。</p></div>
+        <div class="fnode"><div class="n">D</div><h3>一个有界候选 diff</h3><p>一次只改变一个规则或参数族；策略、风险、数据合同、成本模型不能夹带修改。</p></div>
+        <div class="fnode"><div class="n">E</div><h3>预注册与独立验证</h3><p>PIT、walk-forward、OOS、费用/流动性、负对照、一次性 sealed blind 与多重检验控制。</p></div>
+        <div class="fnode gate"><div class="n">F</div><h3>资格、批准、激活分离</h3><p>程序给 EligibilityReport；Jake 对精确 hash 批准；另一步原子激活并保留显式回滚。</p></div>
+      </div>
+      <div class="branches">
+        <div class="branch stop"><b>正常终点：</b> NO_HYPOTHESIS / INELIGIBLE / REJECTED → 不改规则，保留证据。</div>
+        <div class="branch go"><b>合格路径：</b> ELIGIBLE → APPROVED_NOT_ACTIVE → ACTIVE → SUSPENDED / ROLLED_BACK。</div>
+      </div>
+      <div class="async">虚线异步反馈：新规则只影响未来获准运行；绝不回写当前决策，也不自动迁移在途仓位。</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="head"><div><h2>开工前必须定义的脆弱点</h2><p>这些 P0 会改变状态模型、权限边界或核心数据合同，不能留到实现中临时决定。</p></div><span class="tag red">P0 ARCHITECTURE BLOCKERS</span></div>
+    <div class="body">
+      <div class="risk-grid">
+        <div class="risk"><span class="sev">P0 · DATA SEAM</span><h3>Broker Bridge 尚未闭合</h3><p>宿主可见工具不等于本地 Plugin 可程序调用。必须证明 typed、只读、无 LLM ETL 的 seam。</p></div>
+        <div class="risk"><span class="sev">P0 · AUTHORITY</span><h3>权威 Broker / Account</h3><p>IBKR 与 Robinhood 不能混合或 fallback；账户、sizing scope 和数据资格必须唯一绑定。</p></div>
+        <div class="risk"><span class="sev">P0 · IDENTITY</span><h3>卡片如何绑定人工订单</h3><p>需要 decision_id、intent_id、group_id、order_id、execution_id 与 cancel-replace lineage，不能按合约猜。</p></div>
+        <div class="risk"><span class="sev">P0 · STATE</span><h3>部分成交与人工偏离</h3><p>组合意图不保证整组成交；需处理 legging、cancel pending、改单、拒绝、bust/correction。</p></div>
+        <div class="risk"><span class="sev">P0 · TIME</span><h3>“实时”没有合同</h3><p>需冻结 source/event/receive/seal/decision 时间、DST、session、最大年龄与跨域跨度。</p></div>
+        <div class="risk"><span class="sev">P0 · OPTIONS</span><h3>“完全平仓”没有终局定义</h3><p>残余腿/股份、assignment、exercise、adjustment、费用晚到和成交修正都会推迟 CLOSED。</p></div>
+        <div class="risk"><span class="sev">P0 · POLICY</span><h3>可操作交易规则仍未冻结</h3><p>生产 Breakout、carrier、退出与 Risk Policy 仍不完整；Long Call 与 BCS 会产生不同状态模型。</p></div>
+        <div class="risk"><span class="sev">P0 · RECOVERY</span><h3>幂等、并发与崩溃恢复</h3><p>必须定义重复运行、锁、断点恢复、原子写、执行去重、损坏状态与重建 latest。</p></div>
+        <div class="risk"><span class="sev">P0 · VERSIONING</span><h3>新规则如何影响旧仓</h3><p>默认建议 position group 固定开仓时 lifecycle 版本；任何迁移必须另行批准。</p></div>
+        <div class="risk"><span class="sev">P0 · RESEARCH</span><h3>单笔复盘与过拟合</h3><p>触发假设的交易不能再当 OOS；blind 只打开一次；还需保存 NO_ACTION 与未成交机会。</p></div>
+        <div class="risk"><span class="sev">P0 · PRIVACY</span><h3>原始账户数据与凭证</h3><p>凭证只留 Connector；原始 payload、LLM 输入、日志、保留期限与 provider 许可需定义。</p></div>
+        <div class="risk"><span class="sev">P0 · CARD</span><h3>卡片失效与 supersede</h3><p>时间、报价、持仓、订单、session 或规则变化都应使旧卡失效；同一窗口只能一张 active card。</p></div>
+      </div>
+      <div class="later">
+        <div><h3>P1 · 原型后、真实 ACTION_PLAN 前</h3><p>对账刷新节奏、slippage/MAE/MFE 指标、LLM review schema、候选样本与门槛、property/crash/replay tests、备份与状态修复。</p></div>
+        <div><h3>P2 · 明确延后</h3><p>SLV 生产、多账户/第二 Broker、后台 streaming、主动通知、组合优化、自动发布、任何 broker 写入或自动交易。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="question">
+    <h2>先决定第一个架构问题：卡片之后怎样开始对账？</h2>
+    <p>人工提交没有可靠的自动完成事件。请选择 v1 的触发方式。</p>
+    <div class="options">
+      <div class="option" data-choice="explicit_sync" onclick="toggleSelect(this)"><div class="letter">A</div><h3>你显式触发同步</h3><p>你说“已提交，请核验”；Plugin 只读同步一次，可按需重复。</p><span class="rec">推荐 · 最小真实闭环</span></div>
+      <div class="option" data-choice="bounded_poll" onclick="toggleSelect(this)"><div class="letter">B</div><h3>显式触发 + 有界轮询</h3><p>你确认提交后，Plugin 在短时间窗口内重复同步；超时后停止并保留状态。</p></div>
+      <div class="option" data-choice="background_monitor" onclick="toggleSelect(this)"><div class="letter">C</div><h3>后台持续监控</h3><p>自动监听直到终局；需要 scheduler、通知、重启恢复与常驻权限。</p></div>
+    </div>
+  </section>
+  <div class="foot">Design / red-team demo only · no account reads · no market data · no broker writes · no implementation authorization</div>
+</main>
+</body>
+</html>

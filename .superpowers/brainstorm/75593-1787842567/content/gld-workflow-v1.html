@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GLD 决策 Plugin Workflow</title>
+  <style>
+    :root {
+      --bg: #f5f3ed;
+      --paper: #fffefa;
+      --ink: #172033;
+      --muted: #657084;
+      --line: #d7dce5;
+      --blue: #2f61d5;
+      --blue-soft: #eaf0ff;
+      --green: #16765c;
+      --green-soft: #e7f5ef;
+      --amber: #a55a12;
+      --amber-soft: #fff1df;
+      --purple: #7051bd;
+      --purple-soft: #f1edff;
+      --danger: #aa3d42;
+      --shadow: 0 18px 50px rgba(24, 35, 55, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(47, 97, 213, 0.10), transparent 31rem),
+        radial-gradient(circle at 100% 25%, rgba(22, 118, 92, 0.08), transparent 32rem),
+        var(--bg);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      line-height: 1.45;
+    }
+
+    .page { max-width: 1480px; margin: 0 auto; padding: 34px 30px 54px; }
+    .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .14em; color: var(--blue); text-transform: uppercase; }
+    h1 { margin: 8px 0 8px; font-size: clamp(30px, 4vw, 54px); line-height: 1.05; letter-spacing: -.035em; }
+    .lead { margin: 0; max-width: 880px; color: var(--muted); font-size: 17px; }
+    .topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; }
+    .badge {
+      flex: none; display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid #bdd9cb; color: var(--green); background: var(--green-soft);
+      padding: 9px 12px; border-radius: 999px; font-size: 12px; font-weight: 800;
+    }
+    .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+
+    .panel {
+      margin-top: 26px; background: rgba(255, 254, 250, .92); border: 1px solid rgba(186, 194, 207, .85);
+      border-radius: 22px; box-shadow: var(--shadow); overflow: hidden;
+    }
+    .panel-head { padding: 17px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { margin: 0; font-size: 18px; letter-spacing: -.015em; }
+    .panel-head p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .lane-tag { border-radius: 999px; padding: 6px 9px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .lane-tag.daily { color: var(--blue); background: var(--blue-soft); }
+    .lane-tag.feedback { color: var(--purple); background: var(--purple-soft); }
+
+    .daily-body { padding: 20px; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 36px 1.1fr 36px 1.3fr 36px 1.1fr 36px 1.15fr;
+      align-items: stretch;
+      gap: 0;
+    }
+    .node {
+      position: relative; min-height: 138px; border: 1px solid var(--line); border-radius: 16px;
+      background: white; padding: 15px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .node strong { font-size: 15px; line-height: 1.22; }
+    .node p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .node .num {
+      width: 27px; height: 27px; display: inline-grid; place-items: center; border-radius: 9px;
+      background: var(--blue-soft); color: var(--blue); font-size: 12px; font-weight: 900; margin-bottom: 13px;
+    }
+    .node.emphasis { border-color: #a7bdec; background: linear-gradient(180deg, #ffffff, #f6f8ff); }
+    .node.kernel { border-color: #9bd0bc; background: linear-gradient(180deg, #ffffff, #f2fbf7); }
+    .node.kernel .num { color: var(--green); background: var(--green-soft); }
+    .arrow { display: grid; place-items: center; color: #8b96a9; font-size: 26px; font-weight: 300; }
+
+    .provider-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+    .provider { border: 1px solid var(--line); border-radius: 9px; padding: 7px; font-size: 11px; font-weight: 800; text-align: center; }
+    .provider.active { border-color: #86a7ec; color: var(--blue); background: var(--blue-soft); }
+    .provider.inactive { color: #8791a1; background: #f7f8fa; }
+    .exclusive { margin-top: 8px; font-size: 10px; color: var(--danger); font-weight: 800; }
+
+    .result-zone { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; margin-top: 18px; }
+    .result-card, .explain-card { border: 1px solid var(--line); border-radius: 17px; background: #fff; overflow: hidden; }
+    .result-title, .explain-title { padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+    .result-title { color: var(--green); background: var(--green-soft); }
+    .explain-title { color: var(--purple); background: var(--purple-soft); }
+    .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; padding: 13px; }
+    .answer { border: 1px solid #e1e5ec; border-radius: 12px; padding: 10px; min-height: 86px; }
+    .answer span { display: block; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .04em; margin-bottom: 6px; }
+    .answer b { font-size: 12px; }
+    .trace { margin: 0 13px 13px; padding: 9px 11px; border-radius: 10px; background: #f5f7fa; color: #566174; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+    .explain-body { padding: 15px; color: var(--muted); font-size: 12px; }
+    .non-authoritative { display: inline-block; margin-bottom: 9px; color: var(--purple); background: var(--purple-soft); border-radius: 999px; padding: 5px 8px; font-size: 10px; font-weight: 900; }
+    .manual-bar { margin-top: 13px; padding: 12px 14px; border-radius: 13px; border: 1px dashed #d09a69; background: var(--amber-soft); color: #78420e; display: flex; justify-content: space-between; gap: 15px; font-size: 12px; }
+    .manual-bar strong { font-weight: 900; }
+
+    .feedback-body { padding: 20px; }
+    .loop {
+      display: grid;
+      grid-template-columns: 1.15fr 34px 1.15fr 34px 1.15fr 34px 1.15fr 34px 1.15fr;
+      align-items: stretch;
+    }
+    .loop .node { min-height: 122px; }
+    .loop .node .num { color: var(--purple); background: var(--purple-soft); }
+    .gate { border-color: #d9bb8e !important; background: linear-gradient(180deg, #fff, #fff8ed) !important; }
+    .gate .num { color: var(--amber) !important; background: var(--amber-soft) !important; }
+    .return {
+      margin-top: 14px; border: 1px solid #b8a9e7; border-radius: 14px; background: var(--purple-soft);
+      color: #594092; padding: 11px 14px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .return .loop-arrow { font-size: 19px; }
+
+    .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .rule { border-radius: 14px; padding: 13px 14px; font-size: 12px; border: 1px solid var(--line); background: white; }
+    .rule b { display: block; margin-bottom: 4px; font-size: 12px; }
+    .rule p { margin: 0; color: var(--muted); }
+
+    .review { margin-top: 26px; }
+    .review h2 { margin: 0 0 4px; font-size: 20px; }
+    .review > p { margin: 0 0 13px; color: var(--muted); font-size: 13px; }
+    .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }
+    .option { cursor: pointer; border: 1px solid var(--line); background: rgba(255,255,255,.88); border-radius: 14px; padding: 13px; transition: .16s ease; min-height: 90px; }
+    .option:hover { transform: translateY(-2px); border-color: #9eb4e8; box-shadow: 0 8px 22px rgba(31,48,80,.08); }
+    .option.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47,97,213,.12); background: #f7f9ff; }
+    .letter { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 8px; background: var(--blue-soft); color: var(--blue); font-weight: 900; font-size: 11px; float: left; margin-right: 9px; }
+    .option h3 { margin: 2px 0 5px; font-size: 13px; }
+    .option p { margin: 0; color: var(--muted); font-size: 11px; }
+    .foot { margin-top: 20px; color: #7c8696; font-size: 11px; text-align: center; }
+
+    @media (max-width: 1150px) {
+      .flow, .loop { grid-template-columns: 1fr; gap: 9px; }
+      .arrow { transform: rotate(90deg); min-height: 25px; }
+      .node { min-height: auto; }
+      .result-zone, .rules, .options { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .page { padding: 22px 14px 40px; }
+      .topline { display: block; }
+      .badge { margin-top: 15px; }
+      .result-zone, .rules, .options, .card-grid { grid-template-columns: 1fr; }
+      .manual-bar { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topline">
+      <div>
+        <div class="eyebrow">Trading Platform · Workflow Demo v1</div>
+        <h1>一个 Plugin，两条隔离的闭环</h1>
+        <p class="lead">日常闭环负责产生可复现的 GLD 人工决策卡；反馈闭环负责教育、解释、复盘和策略迭代。候选规则只有经过验证与 Jake 明确批准，才会成为下一版日常交易规则。</p>
+      </div>
+      <div class="badge">DESIGN ONLY · BROKER WRITES = 0</div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>闭环 1：每天生成一次权威决策卡</h2>
+          <p>一个入口；LLM 不选择字段、不计算数字、不修改结论。</p>
+        </div>
+        <div class="lane-tag daily">DAILY DECISION LANE</div>
+      </div>
+      <div class="daily-body">
+        <div class="flow">
+          <div class="node emphasis">
+            <div><div class="num">01</div><strong>你调用 Plugin</strong><p>“生成今天的 GLD 决策卡”</p></div>
+            <p>一次顶层调用，不需要逐个操作模块。</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node">
+            <div><div class="num">02</div><strong>只读数据桥</strong><p>账户、持仓、订单、成交、GLD、期权链、日历。</p></div>
+            <div class="provider-switch">
+              <div class="provider active">IBKR Adapter</div>
+              <div class="provider inactive">Robinhood Adapter</div>
+            </div>
+            <div class="exclusive">一次运行只能绑定一个 provider / account</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node">
+            <div><div class="num">03</div><strong>校验、标准化、封存</strong><p>验证身份、分页、时间、新鲜度、完整性、货币与合约唯一性。</p></div>
+            <p><b>输出：</b>typed + sealed FactBundle + hash</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node kernel">
+            <div><div class="num">04</div><strong>确定性交易 Kernel</strong><p>只读取当前已批准的策略规则版本；纯程序执行。</p></div>
+            <p><b>禁止：</b>联网、LLM、运行时调参、自动学习。</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node emphasis">
+            <div><div class="num">05</div><strong>Canonical DecisionResult</strong><p>ACTION_PLAN / NO_ACTION / NO_DECISION</p></div>
+            <p>同一输入 + 同一规则版本 = 完全相同的结构化输出。</p>
+          </div>
+        </div>
+
+        <div class="result-zone">
+          <div class="result-card">
+            <div class="result-title">权威决策卡 · 由程序逐字段生成</div>
+            <div class="card-grid">
+              <div class="answer"><span>什么时候</span><b>入场 / 退出条件 + 有效截止</b></div>
+              <div class="answer"><span>交易什么</span><b>完整合约组 + 每条腿身份</b></div>
+              <div class="answer"><span>交易多少</span><b>整数数量 + 约束来源</b></div>
+              <div class="answer"><span>什么时候卖</span><b>失效、止损、获利与最长持有</b></div>
+            </div>
+            <div class="trace">decision_id · fact_hash · policy_hash · method_hash · kernel_version · broker_write_calls=0</div>
+          </div>
+          <div class="explain-card">
+            <div class="explain-title">LLM 可选解释</div>
+            <div class="explain-body">
+              <span class="non-authoritative">非权威 · 可完全删除</span>
+              <div>解释“为什么”，提供教育内容和阅读辅助；不能新增、删减或改写任何状态、数字、合约、条件与有效期。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-bar">
+          <strong>最终动作：Jake 检查卡片并手工下单</strong>
+          <span>Plugin 永不创建、修改、取消或提交券商订单。</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>闭环 2：教育、解释、复盘推动策略迭代</h2>
+          <p>反馈会产生“候选新规则”，不会直接改写当天正在使用的交易规则。</p>
+        </div>
+        <div class="lane-tag feedback">FEEDBACK & METHOD LANE</div>
+      </div>
+      <div class="feedback-body">
+        <div class="loop">
+          <div class="node">
+            <div><div class="num">A</div><strong>教育与解释</strong><p>理解本次结论、规则依据、不确定性和风险边界。</p></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node">
+            <div><div class="num">B</div><strong>人工复盘与反馈</strong><p>记录“哪里有问题、为什么、需要验证什么”，不直接改规则。</p></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node">
+            <div><div class="num">C</div><strong>候选策略版本</strong><p>规则、参数、数据、成本假设和评价方法全部版本化。</p></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node">
+            <div><div class="num">D</div><strong>离线验证</strong><p>确定性回放、OOS / blind、费用、流动性、风险与失败边界。</p></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node gate">
+            <div><div class="num">E</div><strong>Jake 批准与版本发布</strong><p>只有明确接受一个 hash-bound 版本后，才原子切换 Active Strategy。</p></div>
+          </div>
+        </div>
+        <div class="return"><span class="loop-arrow">↩</span> 新版本在下一次日常运行中生效；旧版本继续保留，用于按 decision ID 重放与比较。</div>
+
+        <div class="rules">
+          <div class="rule"><b>反馈不是在线学习</b><p>当天结果不能修改当天规则，也不能由 LLM 自动调参。</p></div>
+          <div class="rule"><b>教育内容与交易规则分开版本</b><p>解释可以迭代，但不能改变 core_decision_hash。</p></div>
+          <div class="rule"><b>候选结果不进入权威卡</b><p>Research / Shadow 只能提供证据，不能生成生产 ACTION_PLAN。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="review">
+      <h2>这版 workflow 的方向是否正确？</h2>
+      <p>点击最接近你当前判断的一项；也可以直接回到 Codex 用自然语言修改。</p>
+      <div class="options">
+        <div class="option" data-choice="aligned" onclick="toggleSelect(this)">
+          <div class="letter">A</div><h3>整体方向正确</h3><p>继续细化卡片与数据合同。</p>
+        </div>
+        <div class="option" data-choice="data_bridge" onclick="toggleSelect(this)">
+          <div class="letter">B</div><h3>数据桥要调整</h3><p>IBKR / Robinhood 的角色或边界不对。</p>
+        </div>
+        <div class="option" data-choice="feedback_loop" onclick="toggleSelect(this)">
+          <div class="letter">C</div><h3>反馈环要调整</h3><p>策略迭代和批准流程需要修改。</p>
+        </div>
+        <div class="option" data-choice="decision_card" onclick="toggleSelect(this)">
+          <div class="letter">D</div><h3>决策卡要调整</h3><p>权威字段或解释方式需要修改。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">Synthetic design demo · no provider calls · no live market/account data · no broker authority</div>
+  </main>
+</body>
+</html>
