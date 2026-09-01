@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trading Platform｜GLD 建仓决策 Final Decision Card</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; } main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    .subtitle { margin: 0 0 18px; color: #52616b; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400; border-radius: 10px;
+      background: #fff4e6; font-weight: 650; line-height: 1.55; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-top: 16px; }
+    .metric, .owner-card, .stage-card, .plan-card { padding: 16px; border: 1px solid #d9e1e8;
+      border-radius: 12px; background: white; }
+    .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    .owner-grid { display: grid; gap: 18px; margin-top: 20px; }
+    .owner-card h2 { margin: 0 0 12px; } .owner-card h3 { margin: 16px 0 6px; }
+    .stage-grid { display: grid; gap: 16px; margin-top: 18px; }
+    .stage-card h3, .plan-card h3 { margin: 0 0 12px; }
+    .stage-fields { display: grid; grid-template-columns: minmax(150px, 0.3fr) 1fr;
+      gap: 8px 16px; margin: 0; }
+    .stage-fields dt { color: #52616b; font-weight: 650; }
+    .stage-fields dd { margin: 0; line-height: 1.55; }
+    details { margin-top: 14px; padding: 10px 12px; border: 1px solid #e1e7ed;
+      border-radius: 8px; background: #f8fafc; }
+    summary { cursor: pointer; color: #34495e; font-weight: 650; }
+    .details-table { margin-top: 10px; }
+    .section-note { color: #52616b; line-height: 1.55; }
+    .pass { color: #155724; background: #eaf7ed; padding: 9px; border-radius: 8px;
+      font-weight: 700; } .fail { color: #842029; background: #f8d7da; padding: 9px;
+      border-radius: 8px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; } th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    a { color: #0b62a4; } .pending { color: #8a4b08; font-weight: 700; }
+  </style>
+</head>
+<body><main>
+<h1>Trading Platform｜GLD 建仓决策 Final Decision Card</h1>
+<p class="subtitle">R1 本地研究验证版 · 相同canonical输入产生相同输出</p>
+<p class="boundary">RESEARCH_ONLY · NO_DECISION_EFFECT · actionable=false ·
+broker_order_count=0 · 不连接券商，不构成交易指令或收益证明。</p>
+<div class="grid">
+  <div class="metric"><span>最终状态</span><strong>不形成判断</strong></div>
+  <div class="metric"><span>为什么</span><strong>没有可用的Owner批准政策，程序不能判断。</strong></div>
+  <div class="metric"><span>合格方案数量</span><strong>0</strong></div>
+  <div class="metric"><span>Owner下一步</span><strong>阅读八步过程并人工验收</strong></div>
+</div>
+<h2>最终方案</h2>
+<p class="boundary">本场景没有可输出的合格方案；程序未猜测或补造方案。</p>
+<h2>LC0 / BCS0 独立资格比较</h2>
+<table><thead><tr><th>结构</th><th>独立资格结果</th><th>选中合约</th><th>Delta ppm</th><th>直接原因</th></tr></thead><tbody><tr><th>LC0</th><td>因前置条件未运行</td><td>—</td><td>—</td><td>没有可用的Owner批准政策，程序不能判断。</td></tr><tr><th>BCS0</th><td>因前置条件未运行</td><td>—</td><td>[null,null]</td><td>没有可用的Owner批准政策，程序不能判断。</td></tr></tbody></table>
+<h2>六个数量硬cap与实际绑定cap</h2>
+<p class="section-note">程序直接采用canonical trace中已经形成的六个cap与安全数量；卡片不重新计算数量。</p>
+<p class="section-note">本场景未进入可展示的数量计算。</p>
+<h2>Preference比较</h2>
+<p class="section-note">没有正数量方案，因此本场景未进行Preference比较。</p>
+<h2>退出与持仓管理绑定</h2>
+<p class="section-note">本场景没有输出方案，因此没有形成新的退出政策绑定。</p>
+<h2>八步判断过程</h2>
+<p class="section-note">主视图先解释业务含义；原始计算、规则ID、reason/recovery code和hash保留在每张卡片的工程证据中。</p>
+<div class="stage-grid"><section class="stage-card"><h3>1. 输入资格</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>确认输入事实、完整期权池和已批准研究政策是否足够可信，可以进入判断。</dd><dt>关键事实摘要</dt><dd>数据资格：STRUCTURALLY_VALID_SYNTHETIC；完整期权池：true；合约数量：—；开放GLD订单：0；政策状态：—。</dd><dt>应用的人类规则</dt><dd>完整事实、完整原子快照、完整Call universe和Owner批准的固定政策缺一不可；缺失时停止。</dd><dt>程序结果</dt><dd><strong>阻止判断</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>由Owner批准固定政策后重新运行。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;data_qualification_status&quot;:&quot;STRUCTURALLY_VALID_SYNTHETIC&quot;,&quot;open_gld_order_count&quot;:0,&quot;universe_complete&quot;:true}</td></tr><tr><th>fact references</th><td>[&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;,&quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;,&quot;cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_INPUT_QUALIFICATION_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>OWNER_APPROVE_POLICY_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>03bbed50faeb7d61571a869ad57d316b22afd52950a9f29ac8318c527ebfbab6</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>2. Entry Gate</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>确认趋势组与突破组是否分别达到建仓门槛。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>趋势组与突破组必须分别达到本次封存政策的配额，不能相互补分。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_ENTRY_GATE_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>addcdd4d03b5362a055bf2c60234e747985fc8700b70c7bf16631b2c472e16c3</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>3. LC0独立评估</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>独立确认是否存在符合到期、安全距离与Delta规则的单腿Call。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>LC0单独筛选；coarse与fine选择必须一致，且证据、合约与到期条件都合格。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_LC0_EVALUATION_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>8d7052810c51d4b41a93a70f3e8384c19b5d8fa67c24d5bdb57e5087adfe8fa1</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>4. BCS0独立评估</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>独立确认是否存在符合到期、安全距离与Delta规则的1:1牛市Call价差。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>BCS0单独筛选完整1:1组合；coarse与fine选择必须一致，不借用LC0结论。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_BCS0_EVALUATION_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>1b7401285c6161659ba007185b7848428657224c9e6aec769140768035c16e14</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>5. 安全数量</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>确认每个候选结构在全部六个硬上限约束下最多可以保留多少完整单位。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>安全数量取Kelly、账户、现金、Delta、流动性、外部风险六个cap的最小值；0不能补成1。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_SIZING_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>16a007cb90dd687449f62291acb4a4a96033a9baaeb12b697e5cb9a25c3c2844</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>6. 首选排序</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>当一个或两个结构有安全数量时，按冻结顺序形成唯一首选和备选。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>依次比较预期总净利润（高者优先）、计划总损失（低者优先）、现金占用（低者优先）；完全相同固定LC0优先。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_PREFERENCE_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>a80ff16180a7e659e1bd25040bf866d91d1d5fc7e10f009aa30177791fd1d638</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>7. 退出政策绑定</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>确认输出方案在形成时已经绑定H20、硬止损、趋势失效与到期安全规则。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>每个输出方案必须绑定同一份持仓管理政策及自身硬止损；缺少任何绑定就不输出。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_EXIT_POLICY_BINDING_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>43c793c61d58702c362b433eb005564781bfdc86cbfad5b9976f5e54a49e7c00</code></td></tr></tbody></table></details></section><section class="stage-card"><h3>8. 最终决策</h3><dl class="stage-fields"><dt>我们在确认什么</dt><dd>汇总前七步，形成唯一研究结论，并再次确认不能下单。</dd><dt>关键事实摘要</dt><dd>上游已停止：没有可用的Owner批准政策，程序不能判断。</dd><dt>应用的人类规则</dt><dd>只输出NO_DECISION、NO_ACTION、SINGLE_PLAN或PREFERRED_AND_BACKUP之一；Research F0始终不可执行。</dd><dt>程序结果</dt><dd><strong>因前置条件未运行</strong></dd><dt>直接原因中文</dt><dd>没有可用的Owner批准政策，程序不能判断。</dd><dt>失败时如何恢复中文</dt><dd>先解决上游停止原因；本阶段不能跳过上游单独恢复。</dd></dl><details><summary>展开工程证据</summary><table class="details-table"><tbody><tr><th>calculation</th><td>{&quot;blocked_by_reason_code&quot;:&quot;OWNER_APPROVED_POLICY_NOT_AVAILABLE&quot;}</td></tr><tr><th>fact references</th><td>[]</td></tr><tr><th>rule</th><td><code>GLD_ENTRY_FINAL_DECISION_F0</code> / <code>1.0.0</code></td></tr><tr><th>reason / recovery code</th><td><code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code> / <code>RESOLVE_BLOCKING_STAGE_AND_RERUN</code></td></tr><tr><th>stage hash</th><td><code>c9e37cace8b40ffcfb54837d6f891f9fda1ac370008d0f7424f3c35cc4624616</code></td></tr></tbody></table></details></section></div>
+<h2>确定性与权限边界</h2>
+<p class="boundary">这张卡只是sealed canonical DecisionResult的静态投影。它不重新筛选、不重新计算数量、不重新排序，也不能连接券商。</p>
+<details><summary>展开完整结果lineage与工程代码</summary>
+  <table class="details-table"><tbody>
+    <tr><th>decision status / reason</th><td><code>NO_DECISION</code> / <code>OWNER_APPROVED_POLICY_NOT_AVAILABLE</code></td></tr>
+    <tr><th>Trace hash</th><td><code>eee5414ad30fbcc158d48a93731441b465b1c369e2243f99312ca5057a2e6483</code></td></tr>
+    <tr><th>Result hash</th><td><code>88077b1b4429541a2dc447f07a0b20f3636ec0ec16245586aaa28f0511a5f5fd</code></td></tr>
+    <tr><th>Input hash</th><td><code>3eabe3b9728c41b5ba54979ba58d73a784d542716f774a177fe139bd6ad32a06</code></td></tr>
+    <tr><th>Entry policy</th><td><code>GLD_ENTRY_RESEARCH_TRIAL_F0_STRICT</code> / <code>4016036e9634a5ca34eca0508e1fd1e70af5b8a3fa1a3173df2fb0988b0de97c</code></td></tr>
+    <tr><th>权限</th><td>RESEARCH_ONLY / NO_DECISION_EFFECT</td></tr>
+    <tr><th>执行能力</th><td>actionable=false; broker_order_count=0</td></tr>
+  </tbody></table>
+</details>
+</main></body>
+</html>

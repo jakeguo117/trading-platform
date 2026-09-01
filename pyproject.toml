@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gld-research-normalizer"
-version = "0.1.0"
-description = "Deterministic, fail-closed GLD underlying research normalizer."
+name = "gld-trading-research-core"
+version = "0.2.0"
+description = "Deterministic, fail-closed GLD Long Call and BCS research core."
 requires-python = ">=3.11"
 dependencies = []
 
@@ -14,4 +14,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

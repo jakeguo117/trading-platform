@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GLD 持仓管理 Research F0</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; }
+    main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400;
+      border-radius: 10px; background: #fff4e6; font-weight: 650; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px; margin-top: 16px; }
+    .metric { padding: 14px; border: 1px solid #d9e1e8; border-radius: 10px;
+      background: white; } .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; } th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    a { color: #0b62a4; } .pending { color: #8a4b08; font-weight: 700; }
+  </style>
+</head>
+<body><main>
+<h1>GLD 持仓管理 Research F0</h1>
+<p class="boundary">RESEARCH_ONLY · NO_DECISION_EFFECT ·
+actionable=false ·
+不可执行研究输出 · broker_order_count=0</p>
+<div class="grid">
+  <div class="metric"><span>Final Score</span><strong>80.00</strong></div>
+  <div class="metric"><span>Band</span><strong>RESTORE_ELIGIBLE</strong></div>
+  <div class="metric"><span>Action</span><strong>HOLD</strong></div>
+  <div class="metric"><span>Units</span><strong>2 → 2</strong></div>
+  <div class="metric"><span>Reason</span><strong>WAITING_FOR_RECOVERY_CONFIRMATION</strong></div>
+  <div class="metric"><span>Original approved units</span><strong>4</strong></div>
+  <div class="metric"><span>Run hash</span><strong><code>82bf474681d34c42f5b8ca06243503d29d5c066faba23c1a88e82740dc8860c2</code></strong></div>
+</div>
+<h2>Raw Management Facts</h2>
+<table><tbody>
+  <tr><th>Session / close</th><td>2025-12-03 / 211913600000</td><th>Prior close</th><td>211859200000</td></tr>
+  <tr><th>Current volume</th><td>1000000</td><th>Carrier / episode</th><td>LC0 / EPISODE-RECOVERY-DAY-1</td></tr>
+  <tr><th>Pinned calendar</th><td><code>XNYS_PINNED_RESEARCH_F0_V1</code></td><th>Calendar hash</th><td><code>5f14b451139dd42a072c2e5ee829618f487a527fb322f25cef669eae2c090190</code></td></tr>
+  <tr><th>Action fact kind / clock / DTE</th><td>SCHEDULED_1045_ET / 2025-12-04 / 379</td><th>Risk caps</th><td>10 / 10 / 10</td></tr>
+  <tr><th>Action/event UTC ns</th><td>1764863100000000000</td><th>Fee / reconciliation / override</th><td>COMPLETE / MATCHED / NONE</td></tr>
+</tbody></table>
+<h2>Quote Quality Facts</h2>
+<table><thead><tr><th>Contract</th><th>Bid / Ask</th><th>Bid / Ask size</th><th>Tick</th><th>Event UTC ns</th><th>Receive UTC ns</th></tr></thead><tbody><tr><td><code>GLD-20261218-C-200</code></td><td>5000000000 / 5100000000</td><td>100 / 100</td><td>10000000</td><td>1764863099000000000</td><td>1764863099000000000</td></tr></tbody></table>
+<h2>Local Technical Indicators</h2>
+<table><tbody>
+  <tr><th>SMA50</th><td>210580800000</td><th>ATR14</th><td>2000000000</td></tr>
+  <tr><th>RSI14</th><td>1000000</td><th>MACD histogram</th><td>0</td></tr>
+  <tr><th>+DI / -DI / ADX</th><td colspan="3">27200 / 0 / 1000000</td></tr>
+  <tr><th>Prior 20 normal-session volume median</th><td colspan="3">1000000</td></tr>
+</tbody></table>
+<h2>Dimension Contributions</h2>
+<table><thead><tr><th>Dimension</th><th>Components</th><th>Final contribution</th></tr></thead><tbody>
+  <tr><td>Structure</td><td>base=399904; volume quality=1000000; alignment=1</td><td>399904</td></tr>
+  <tr><td>Trend</td><td>direction balance=1000000; ADX strength=1000000</td><td>1000000</td></tr>
+  <tr><td>Momentum</td><td>RSI=1000000; MACD=0; gross=500000; agreement=1000000</td><td>500000</td></tr>
+</tbody></table>
+<h2>Breakout Episode Diagnostic</h2>
+<p class="boundary">authority=NO_ACTION_AUTHORITY；此诊断不进入任何policy score，也不能产生action。</p>
+<table><tbody>
+  <tr><th>Breakout line / current close</th><td>200000000000 / 211913600000</td><th>Relationship</th><td>ABOVE</td></tr>
+  <tr><th>Distance / ATR-scaled distance</th><td>11913600000 / 5956800</td><th>Diagnostic hash</th><td><code>219c40dcb857e2a49796957d337358da7d9c52f81c49405f1ab587aac6994326</code></td></tr>
+</tbody></table>
+<h2>Primary Policy Calculation</h2>
+<table><tbody>
+  <tr><th>Weights</th><td>{&#x27;structure&#x27;: 500000, &#x27;trend&#x27;: 300000, &#x27;momentum&#x27;: 200000}</td></tr>
+  <tr><th>Weighted contributions</th><td>{&#x27;structure&#x27;: 199952, &#x27;trend&#x27;: 300000, &#x27;momentum&#x27;: 100000}</td></tr>
+  <tr><th>Net / Gross / Agreement</th><td>599952 / 599952 / 1000000</td></tr>
+</tbody></table>
+<h2>Shadow Policies</h2>
+<table><thead><tr><th>Policy</th><th>Score</th><th>Band</th><th>Action authority</th></tr></thead><tbody><tr><td><code>CONTROL_EQUAL_WITH_VOLUME</code></td><td>81.67</td><td>RESTORE_ELIGIBLE</td><td>false</td></tr><tr><td><code>ABLATION_ROLE_NO_VOLUME</code></td><td>80.00</td><td>RESTORE_ELIGIBLE</td><td>false</td></tr><tr><td><code>ABLATION_EQUAL_NO_VOLUME</code></td><td>81.67</td><td>RESTORE_ELIGIBLE</td><td>false</td></tr></tbody></table>
+<h2>Streak and Exposure</h2>
+<table><tbody>
+  <tr><th>below 40</th><td>0</td><th>below 20</th><td>0</td></tr>
+  <tr><th>above 70</th><td>1</td><th>Effective cap</th><td>4</td></tr>
+  <tr><th>Exit latch</th><td>CLEAR → CLEAR</td><th>Score cap</th><td>4</td></tr>
+</tbody></table>
+<h2>Deterministic Evidence</h2>
+<table><tbody>
+  <tr><th>Observation input</th><td><code>33345c860c8a388a11fd527d9304b322051449a583fa7defa59011fad97f9098</code></td></tr>
+  <tr><th>Formula catalog</th><td><code>b0c281bf882bfa61cb14c429bcaeef758b274777b7b29db83e899326d9f25eca</code></td></tr>
+  <tr><th>Policy set</th><td><code>a18d9d3bc5ab374d996ba3e682b518f60baaf349442bba5c19fb0207339877d6</code></td></tr>
+  <tr><th>Action policy</th><td><code>a18d9d3bc5ab374d996ba3e682b518f60baaf349442bba5c19fb0207339877d6</code></td></tr>
+  <tr><th>Score result</th><td><code>2ea7d2ea3528ea785d38f5350b3c97893bcbf0d9f7f7ab58159c517c8dadc573</code></td></tr>
+  <tr><th>Indicators</th><td><code>bb7e6718fa838154a35c9ce482b31a2e5f7f58ed1b83ffc7230ec025501830f3</code></td></tr>
+  <tr><th>Dimensions</th><td><code>f1659367e713763970c65845ed31c1b06feae21c3257f8cec1a338113cf6b157</code></td></tr>
+  <tr><th>Action result</th><td><code>a97177b3dcb3754be7c064eba7657d4fb12e27bd5c359a5ca0b656dc37378d9a</code></td></tr>
+  <tr><th>Action input</th><td><code>7cd63b66ab0ad6085028770936a6c162cc534bc1fa330f0f39746d1fcfc9e4e2</code></td></tr>
+</tbody></table>
+</main></body>
+</html>

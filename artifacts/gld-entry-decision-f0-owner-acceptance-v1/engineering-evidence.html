@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trading Platform｜GLD 建仓决策 R1 工程证据</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; } main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    .subtitle { margin: 0 0 18px; color: #52616b; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400; border-radius: 10px;
+      background: #fff4e6; font-weight: 650; line-height: 1.55; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-top: 16px; }
+    .metric, .owner-card, .stage-card, .plan-card { padding: 16px; border: 1px solid #d9e1e8;
+      border-radius: 12px; background: white; }
+    .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    .owner-grid { display: grid; gap: 18px; margin-top: 20px; }
+    .owner-card h2 { margin: 0 0 12px; } .owner-card h3 { margin: 16px 0 6px; }
+    .stage-grid { display: grid; gap: 16px; margin-top: 18px; }
+    .stage-card h3, .plan-card h3 { margin: 0 0 12px; }
+    .stage-fields { display: grid; grid-template-columns: minmax(150px, 0.3fr) 1fr;
+      gap: 8px 16px; margin: 0; }
+    .stage-fields dt { color: #52616b; font-weight: 650; }
+    .stage-fields dd { margin: 0; line-height: 1.55; }
+    details { margin-top: 14px; padding: 10px 12px; border: 1px solid #e1e7ed;
+      border-radius: 8px; background: #f8fafc; }
+    summary { cursor: pointer; color: #34495e; font-weight: 650; }
+    .details-table { margin-top: 10px; }
+    .section-note { color: #52616b; line-height: 1.55; }
+    .pass { color: #155724; background: #eaf7ed; padding: 9px; border-radius: 8px;
+      font-weight: 700; } .fail { color: #842029; background: #f8d7da; padding: 9px;
+      border-radius: 8px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; } th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    a { color: #0b62a4; } .pending { color: #8a4b08; font-weight: 700; }
+  </style>
+</head>
+<body><main>
+<h1>Trading Platform｜GLD 建仓决策 R1 工程证据</h1>
+<p class="boundary">RESEARCH_ONLY · NO_DECISION_EFFECT · actionable=false · broker_order_count=0 · OWNER_ACCEPTANCE_PENDING</p>
+<p><a href="index.html">返回人工验收首页</a></p>
+<table><thead><tr><th>场景</th><th>关键输入</th><th>预期</th><th>实际</th><th>自动证据</th><th>Owner状态</th><th>文件与hash</th></tr></thead>
+<tbody><tr><td><code>missing_input</code><br>Incomplete Call universe fails closed before Entry Gate</td><td>Call universe被明确标记为不完整。</td><td>NO_DECISION；无方案</td><td>NO_DECISION；无方案；reason=CALL_UNIVERSE_INCOMPLETE</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="missing_input/final-decision-card.html">Decision Card</a> · <a href="missing_input/entry-decision-result-f0.json">DecisionResult</a> · <a href="missing_input/entry-decision-input-f0.json">Raw input</a><br>input <code>019f44703054637ad205ea107b62e4d38ee24cd93dc8aaf1d91443efb6d8f14a</code><br>trace <code>d344c8d7952136047f07cfad7e3291a5f29c7a9562c27f9d0ea677f2673733c8</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>683d611775432795f3faef6df6227e6110f3f41720e6063958a19d02511ea571</code></td></tr><tr><td><code>gate_fail</code><br>Complete facts fail the fixed grouped Entry Gate</td><td>数据完整，但prior close低于SMA50，严格Gate未达标。</td><td>NO_ACTION；无方案</td><td>NO_ACTION；无方案；reason=ENTRY_GATE_QUOTA_NOT_MET</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="gate_fail/final-decision-card.html">Decision Card</a> · <a href="gate_fail/entry-decision-result-f0.json">DecisionResult</a> · <a href="gate_fail/entry-decision-input-f0.json">Raw input</a><br>input <code>0e5c0e02f73cd8b952b4d0a64dcfbaf9aa0f8bec5a622db3b0964cafd86234ed</code><br>trace <code>013c3c1f77985ea033fadb8a23bf61d40e5d3a2b32608e6a42629c74c9beaf97</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>c00dcae4740c191eea50c572672fb1aabc9b666b645cc6046448aa727f353443</code></td></tr><tr><td><code>lc_only</code><br>BCS0 elimination leaves one complete LC0 plan</td><td>BCS0缺少结构economics，LC0事实完整。</td><td>SINGLE_PLAN；LC0</td><td>SINGLE_PLAN；LC0；reason=SINGLE_PLAN</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="lc_only/final-decision-card.html">Decision Card</a> · <a href="lc_only/entry-decision-result-f0.json">DecisionResult</a> · <a href="lc_only/entry-decision-input-f0.json">Raw input</a><br>input <code>579ef3dff2f3098a81f902b9c72855d25c829685f8719049de0419344e6d9883</code><br>trace <code>48bf5964ef83195284710328943a9e3210df1b305bfba63a24c3c1b3d4f771ce</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>06c5ef4f4092da320b73bccf29c93599bf81ea3425d6127c856fe1dda54fe14d</code></td></tr><tr><td><code>bcs_only</code><br>LC0 elimination leaves one complete BCS0 plan</td><td>LC0缺少结构economics，BCS0事实完整。</td><td>SINGLE_PLAN；BCS0</td><td>SINGLE_PLAN；BCS0；reason=SINGLE_PLAN</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="bcs_only/final-decision-card.html">Decision Card</a> · <a href="bcs_only/entry-decision-result-f0.json">DecisionResult</a> · <a href="bcs_only/entry-decision-input-f0.json">Raw input</a><br>input <code>e010c8612d40ae8e26bb3c581f3a9c28788396841e4ec3be595f549cd218bbec</code><br>trace <code>b96a7adc447fd5c4085a9e3fe50a4484a64baafc72928f21e79ea79f93b34707</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>b24ec120b32fdcc4d3e5286c1c4d27f26ccde7aaaa17ba8717ed907ae97058ef</code></td></tr><tr><td><code>both_qualified</code><br>Both structures qualify and expected net profit gives a preference</td><td>LC0和BCS0都完整合格，BCS0的lower-bound预期总净利润更高。</td><td>PREFERRED_AND_BACKUP；BCS0 → LC0</td><td>PREFERRED_AND_BACKUP；BCS0 → LC0；reason=PREFERRED_AND_BACKUP</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="both_qualified/final-decision-card.html">Decision Card</a> · <a href="both_qualified/entry-decision-result-f0.json">DecisionResult</a> · <a href="both_qualified/entry-decision-input-f0.json">Raw input</a><br>input <code>8eb39552055f9ba09f436b89e726b149cb2001a7373a12f685c963ec08abce11</code><br>trace <code>442cc116f41c58f870d86d357bdd964e24fbb1954b96b0da2f1082d28e6b936c</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>326dee66ea95fd1fdb5ce79d9a65842bae14a7bf8f8028d8163ad662eb2eaa97</code></td></tr><tr><td><code>exact_tie</code><br>An exact preference tie uses the frozen LC0 tie-break</td><td>两方案预期净利润、planned loss和cash usage完全相同。</td><td>PREFERRED_AND_BACKUP；LC0 → BCS0</td><td>PREFERRED_AND_BACKUP；LC0 → BCS0；reason=PREFERRED_AND_BACKUP</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="exact_tie/final-decision-card.html">Decision Card</a> · <a href="exact_tie/entry-decision-result-f0.json">DecisionResult</a> · <a href="exact_tie/entry-decision-input-f0.json">Raw input</a><br>input <code>aec1648de44c8cfe148ba174e2621bddccba0335e2d0492c2b1a15bbe333d355</code><br>trace <code>381b48051a6969d30ae222139598e84fb98bc585deea9381af97ca59b4d14e04</code><br>evidence <code>505b75eb7e3fe4e42ddad2e54f6c4aa7938d5514cd02131ed584e8f05417a86c</code> <a href="evidence/exact-tie/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>d8688a02e5d12137638e43384d56d777ec7cad03b207430abb350689359b81b1</code></td></tr><tr><td><code>zero_cap</code><br>A hard risk cap of zero eliminates otherwise valid structures</td><td>账户drawdown达到禁止新Entry的边界，数量硬cap为0。</td><td>NO_ACTION；无方案</td><td>NO_ACTION；无方案；reason=ALL_STRUCTURES_ZERO_QUANTITY</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="zero_cap/final-decision-card.html">Decision Card</a> · <a href="zero_cap/entry-decision-result-f0.json">DecisionResult</a> · <a href="zero_cap/entry-decision-input-f0.json">Raw input</a><br>input <code>25bea24b0b715ba3e6460efaccc26b72444e2e14b585e8232aea980ba723f810</code><br>trace <code>3a69bb9b1a194e83f823679ec5e1afa240222fa7d50dcf2715624c1ca1eaa121</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>d08b7db9b399115e907d78cbb09823d652e68f5496d1f61c1b5bde23c702a749</code></td></tr><tr><td><code>policy_missing</code><br>An unavailable owner policy blocks a decision</td><td>Entry policy存在但owner_approved=false，因此没有可用政策权限。</td><td>NO_DECISION；无方案</td><td>NO_DECISION；无方案；reason=OWNER_APPROVED_POLICY_NOT_AVAILABLE</td><td>AUTOMATED_EVIDENCE_PASS</td><td class="pending">OWNER_ACCEPTANCE_PENDING</td><td><a href="policy_missing/final-decision-card.html">Decision Card</a> · <a href="policy_missing/entry-decision-result-f0.json">DecisionResult</a> · <a href="policy_missing/entry-decision-input-f0.json">Raw input</a><br>input <code>e415b42afe57602377844dca28437f76bcd4e77cfba7bffa92868267ece79dfd</code><br>trace <code>eee5414ad30fbcc158d48a93731441b465b1c369e2243f99312ca5057a2e6483</code><br>evidence <code>41096337d2706fd981f28520680f820d54da1ecadee2838cf61ea49e5db43327</code> <a href="evidence/base/historical-structure-evidence-bundle-v2.json">Evidence V2</a><br>result <code>88077b1b4429541a2dc447f07a0b20f3636ec0ec16245586aaa28f0511a5f5fd</code></td></tr></tbody></table>
+<h2>工程验收 Checklist</h2>
+<ul>
+  <li>缺输入或政策缺失时fail closed为NO_DECISION。</li>
+  <li>Gate失败或风险容量为零时不输出可执行方案。</li>
+  <li>只有LC0或BCS0合格时，只输出对应一个方案。</li>
+  <li>两者都合格时输出固定首选和备选；精确平局使用固定tie-break。</li>
+  <li>每个DecisionResult包含顺序固定的八个trace stages及稳定hash。</li>
+  <li>相同输入重复运行、Call/economics列表顺序变化及跨进程运行后，canonical JSON、card和hash逐字节一致。</li>
+  <li>HTML不重新计算结果，不含脚本、表单、券商连接或交易控件。</li>
+  <li>本结果不是策略盈利证明、真实数据资格或交易授权。</li>
+</ul>
+</main></body>
+</html>

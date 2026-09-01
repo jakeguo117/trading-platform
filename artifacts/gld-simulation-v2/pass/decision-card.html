@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>GLD 模拟决策卡：请选择模拟方案</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172019;
+      --muted: #5c665e;
+      --paper: #f4f3ed;
+      --panel: #fffef9;
+      --line: #d5d7cf;
+      --forest: #173f2e;
+      --forest-soft: #e7efe9;
+      --amber: #9a640e;
+      --amber-soft: #fff2cf;
+      --danger: #8a2929;
+      --danger-soft: #fae5e2;
+      --shadow: 0 10px 30px rgba(23, 32, 25, .08);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .safety-banner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 12px 16px;
+      background: #102c21;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-align: center;
+    }
+    .safety-banner span + span::before { content: "｜"; margin: 0 10px; color: #c8d8cf; }
+    main { width: min(1120px, calc(100% - 32px)); margin: 28px auto 56px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 26ch;
+      margin-bottom: 12px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    h2 { margin-bottom: 14px; font-size: clamp(23px, 3vw, 32px); line-height: 1.25; }
+    h3 { margin-bottom: 12px; font-size: 20px; line-height: 1.35; overflow-wrap: anywhere; }
+    .decision-hero {
+      padding: clamp(24px, 4vw, 42px);
+      border-left: 8px solid var(--forest);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .status-no-action { border-left-color: var(--amber); }
+    .status-no-decision { border-left-color: var(--danger); }
+    .status-kicker { margin-bottom: 8px; color: var(--muted); font-weight: 800; }
+    .status-no-action .status-kicker { color: var(--amber); }
+    .status-no-decision .status-kicker { color: var(--danger); }
+    .decision-lead { max-width: 72ch; margin-bottom: 10px; font-size: 18px; }
+    .data-time { margin-bottom: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .content-section, .state-explanation, .next-step, .audit-details {
+      margin-top: 24px;
+      padding: clamp(20px, 3vw, 30px);
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+    .section-intro { color: var(--muted); }
+    .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .choice-card, .order-card { min-width: 0; border: 1px solid var(--line); background: #fff; }
+    .choice-heading { padding: 18px 20px 10px; background: var(--forest-soft); }
+    .choice-label { margin-bottom: 4px; color: var(--muted); font-weight: 750; }
+    .choice-heading h3 { margin-bottom: 0; }
+    .table-scroll { max-width: 100%; overflow-x: auto; }
+    .table-scroll:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
+    caption { padding: 12px 16px; color: var(--muted); font-weight: 700; text-align: left; }
+    th, td { padding: 11px 13px; border-bottom: 1px solid #e7e8e2; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-weight: 700; }
+    tbody th { width: 42%; }
+    tr:last-child th, tr:last-child td { border-bottom: 0; }
+    .money { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .order-stack { display: grid; gap: 18px; }
+    .order-card { padding: 20px; }
+    .order-table { min-width: 860px; }
+    .structure-note, .combo-warning, .quote-warning { padding: 12px 14px; background: var(--forest-soft); }
+    .combo-warning, .quote-warning { background: var(--amber-soft); }
+    .live-blockers { margin-top: 18px; padding: 18px; border-left: 5px solid var(--danger); background: var(--danger-soft); }
+    .live-blockers p:last-child { margin-bottom: 0; }
+    .next-step { border: 2px solid var(--forest); background: var(--forest-soft); }
+    .next-step p:last-child { margin-bottom: 0; }
+    .checklist, .plain-list { margin: 0; padding-left: 1.35rem; }
+    .checklist li, .plain-list li { margin: 8px 0; }
+    .check-pass strong { color: var(--forest); }
+    .check-fail strong { color: var(--danger); }
+    .audit-details summary {
+      min-height: 44px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 44px;
+    }
+    .audit-details summary:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 3px;
+    }
+    .audit-details pre {
+      max-height: 640px;
+      margin: 12px 0 0;
+      padding: 16px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: #f7f7f3;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .audit-details pre:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 3px;
+    }
+    footer { margin-top: 24px; color: var(--muted); font-size: 15px; }
+    @media (max-width: 768px) {
+      main { width: min(100% - 20px, 1120px); margin-top: 10px; }
+      .decision-hero, .content-section, .state-explanation, .next-step, .audit-details { padding: 20px; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .choice-card, .order-card { width: 100%; }
+      h1 { max-width: 100%; }
+    }
+    @media (max-width: 420px) {
+      main { width: 100%; margin-bottom: 32px; }
+      .decision-hero, .content-section, .state-explanation, .next-step, .audit-details {
+        margin-top: 12px;
+        padding: 18px 14px;
+        border-right: 0;
+        border-left-width: 0;
+      }
+      .decision-hero { border-left-width: 6px; }
+      th, td { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="safety-banner" aria-label="模拟安全边界">
+    <span>仅模拟</span><span>合成数据</span><span>禁止真实下单</span>
+  </header>
+  <main id="main-content">
+    <header class="decision-hero status-choice">
+      <p class="status-kicker">GLD 建仓模拟决策卡</p>
+      <h1>两个模拟方案均通过，请由 Jake 选择</h1>
+      <p class="decision-lead">程序已完成 Gate A、候选筛选和风险数量计算。这里展示的是模拟选择，不是真实订单。</p>
+      <p class="data-time">数据时点（纽约）：2026-08-28 10:45 ET</p>
+    </header>
+    <section aria-labelledby="comparison-title" class="content-section"><h2 id="comparison-title">A / B 方案对比</h2><p class="section-intro">两套结构均通过当前模拟规则；本卡不替你推荐任何一套。</p><div class="comparison-grid"><article class="choice-card"><header class="choice-heading"><p class="choice-label">方案 A</p><h3>A · Long Call</h3></header><div class="table-scroll" role="region" tabindex="0" aria-label="方案 A 核心对比，可横向滚动"><table><caption>方案 A 核心对比</caption><tbody><tr><th scope="row">结构</th><td>模拟单腿 Call</td></tr><tr><th scope="row">组合数量</th><td>9 张</td></tr><tr><th scope="row">每份预计成本</th><td class="money">$1,050.65</td></tr><tr><th scope="row">预计总成本</th><td class="money">$9,455.85</td></tr><tr><th scope="row">模型最大亏损</th><td class="money">$9,470.70</td></tr><tr><th scope="row">收益上限</th><td>结构上不封顶</td></tr></tbody></table></div></article><article class="choice-card"><header class="choice-heading"><p class="choice-label">方案 B</p><h3>B · Bull Call Spread</h3></header><div class="table-scroll" role="region" tabindex="0" aria-label="方案 B 核心对比，可横向滚动"><table><caption>方案 B 核心对比</caption><tbody><tr><th scope="row">结构</th><td>原生 1:1 组合</td></tr><tr><th scope="row">组合数量</th><td>16 组</td></tr><tr><th scope="row">每组预计成本</th><td class="money">$623.30</td></tr><tr><th scope="row">预计总成本</th><td class="money">$9,972.80</td></tr><tr><th scope="row">模型最大亏损</th><td class="money">$10,025.60</td></tr><tr><th scope="row">收益上限</th><td>在卖出行权价处封顶</td></tr></tbody></table></div></article></div></section><section class="content-section" aria-labelledby="preview-title"><h2 id="preview-title">模拟订单预览</h2><p class="quote-warning"><strong>注意：</strong>bid / ask 仅用于本次模拟成本计算，不是订单限价。</p><p class="cost-note">预计成本包含规则包中的模拟入场费用，因此不等于只用显示的 bid / ask × 100 简单计算。</p><div class="order-stack"><article class="order-card"><h3>方案 A · Long Call</h3><p class="structure-note">模拟单腿 Call。</p><div class="table-scroll" role="region" tabindex="0" aria-label="方案 A 模拟订单腿，可横向滚动"><table class="order-table"><caption>方案 A 模拟订单腿</caption><thead><tr><th scope="col">腿</th><th scope="col">方向</th><th scope="col">数量</th><th scope="col">合约</th><th scope="col">到期日</th><th scope="col">行权价</th><th scope="col">价内 / 价外</th><th scope="col">计算用 bid / ask</th></tr></thead><tbody><tr><th scope="row">第 1 腿</th><td>买入开仓</td><td>9 张</td><td class="mono">GLD   261127C00204000</td><td>2026-11-27</td><td class="money">$204.00</td><td>价外（OTM）</td><td class="money">$10.48 / $10.50</td></tr></tbody></table></div></article><article class="order-card"><h3>方案 B · Bull Call Spread</h3><p class="combo-warning">BCS 必须作为一个原生 1:1 组合执行，不可逐腿执行。</p><div class="table-scroll" role="region" tabindex="0" aria-label="方案 B 模拟订单腿，可横向滚动"><table class="order-table"><caption>方案 B 模拟订单腿</caption><thead><tr><th scope="col">腿</th><th scope="col">方向</th><th scope="col">数量</th><th scope="col">合约</th><th scope="col">到期日</th><th scope="col">行权价</th><th scope="col">价内 / 价外</th><th scope="col">计算用 bid / ask</th></tr></thead><tbody><tr><th scope="row">第 1 腿</th><td>买入开仓</td><td>16 张</td><td class="mono">GLD   261127C00204000</td><td>2026-11-27</td><td class="money">$204.00</td><td>价外（OTM）</td><td class="money">$10.48 / $10.50</td></tr><tr><th scope="row">第 2 腿</th><td>卖出开仓</td><td>16 张</td><td class="mono">GLD   261127C00224000</td><td>2026-11-27</td><td class="money">$224.00</td><td>价外（OTM）</td><td class="money">$4.28 / $4.30</td></tr></tbody></table></div></article></div><aside class="live-blockers" aria-labelledby="live-blockers-title"><h3 id="live-blockers-title">为什么现在不能真实下单</h3><p>真实执行仍缺：合格实时报价、限价规则、订单有效期（TIF）和卡片有效期。</p></aside></section><section class="next-step" aria-labelledby="next-step-title"><h2 id="next-step-title">你的下一步</h2><p><strong>请在 Codex 对话中回复 A、B 或不交易。</strong></p><p>这只记录模拟选择，不创建、预填或提交任何券商订单。</p></section><section class="content-section" aria-labelledby="gate-title"><h2 id="gate-title">Gate A 条件</h2><ul class="checklist"><li class="check-pass">均线趋势：50 日均线 $196.55；200 日均线 $189.05；要求前者更高：通过</li><li class="check-pass">50 日均线上升趋势：当前 $196.55；20 个交易日前 $194.55；要求前者更高：通过</li><li class="check-pass">前收盘价位置：前收盘价 $199.00；50 日均线 $196.55；要求前者更高：通过</li><li class="check-pass">盘中突破：10:44 收盘价 $199.69；突破价 $199.40；要求前者更高：通过</li><li class="check-pass">突破后保持分钟数：15 / 10，通过</li></ul></section><section class="content-section" aria-labelledby="exit-title"><h2 id="exit-title">共同退出纪律</h2><ul class="plain-list"><li>不设置固定止盈。</li><li>Gate A 失效时需要进行退出复核。</li><li>必须在合约安全边界前全部平仓。</li><li>最晚完整退出日：2026-09-28（H20）。</li><li>本模拟版本不启用向上 roll。</li></ul></section>
+    <details class="audit-details"><summary>审计详情（机器字段）</summary><p>包含 hash、CRR、selector、容量以及 nano / ppm / ns 原始字段。</p><pre role="region" tabindex="0" aria-label="审计详情，可滚动">{
+  &quot;candidates&quot;: [
+    {
+      &quot;base_entry_cost_nano_usd_per_contract&quot;: 1050650000000,
+      &quot;binding_constraints&quot;: [
+        &quot;KELLY_DRAWDOWN&quot;
+      ],
+      &quot;capacities&quot;: {
+        &quot;cash&quot;: 190,
+        &quot;delta_notional&quot;: 31,
+        &quot;kelly_drawdown&quot;: 9,
+        &quot;liquidity&quot;: 100,
+        &quot;max_loss&quot;: 194,
+        &quot;planned_loss&quot;: 194
+      },
+      &quot;carrier_id&quot;: &quot;LC0&quot;,
+      &quot;delta_notional_nano_usd_per_contract&quot;: 9732020000000,
+      &quot;economics&quot;: {
+        &quot;base_entry_cost_nano_usd_per_contract&quot;: 1050650000000,
+        &quot;carrier_id&quot;: &quot;LC0&quot;,
+        &quot;delta_notional_nano_usd_per_contract&quot;: 9732020000000,
+        &quot;execution_assumptions&quot;: {
+          &quot;include_exit_fees_in_max_loss&quot;: true,
+          &quot;long_entry_adverse_ticks&quot;: 1,
+          &quot;short_entry_adverse_ticks&quot;: 1
+        },
+        &quot;fee_components_nano_usd_per_contract&quot;: {
+          &quot;long_entry&quot;: 650000000,
+          &quot;long_exit&quot;: 650000000,
+          &quot;short_entry&quot;: 0,
+          &quot;short_exit&quot;: 0
+        },
+        &quot;gross_expiry_width_nano_usd_per_contract&quot;: null,
+        &quot;liquidity_capacity&quot;: 100,
+        &quot;modeled_expiry_max_profit_nano_usd_per_strategy_unit&quot;: null,
+        &quot;planned_exit_fees_nano_usd_per_contract&quot;: 650000000,
+        &quot;sizing_max_loss_nano_usd_per_contract&quot;: 1052300000000,
+        &quot;sizing_planned_loss_nano_usd_per_contract&quot;: 1052300000000,
+        &quot;stressed_entry_cost_nano_usd_per_contract&quot;: 1051650000000
+      },
+      &quot;expiry_date&quot;: &quot;2026-11-27&quot;,
+      &quot;gross_expiry_width_nano_usd_per_contract&quot;: null,
+      &quot;h20_date&quot;: &quot;2026-09-28&quot;,
+      &quot;legs&quot;: [
+        {
+          &quot;ask_nano_usd&quot;: 10500000000,
+          &quot;ask_size&quot;: 100,
+          &quot;bid_nano_usd&quot;: 10480000000,
+          &quot;bid_size&quot;: 100,
+          &quot;coarse_delta_ppm&quot;: 486588,
+          &quot;contract_id&quot;: &quot;GLD   261127C00204000&quot;,
+          &quot;delta_ppm&quot;: 486601,
+          &quot;expiry_date&quot;: &quot;2026-11-27&quot;,
+          &quot;expiry_utc_ns&quot;: 1795813200000000000,
+          &quot;fine_delta_ppm&quot;: 486601,
+          &quot;moneyness&quot;: &quot;OTM&quot;,
+          &quot;ratio&quot;: 1,
+          &quot;side&quot;: &quot;BUY_TO_OPEN&quot;,
+          &quot;strike_nano_usd&quot;: 204000000000
+        }
+      ],
+      &quot;long_coarse_delta_ppm&quot;: 486588,
+      &quot;long_fine_delta_ppm&quot;: 486601,
+      &quot;max_loss_nano_usd&quot;: 9470700000000,
+      &quot;minimum_expiry_date&quot;: &quot;2026-10-28&quot;,
+      &quot;modeled_expiry_max_profit_nano_usd_per_strategy_unit&quot;: null,
+      &quot;moneyness&quot;: &quot;OTM&quot;,
+      &quot;net_delta_ppm_per_strategy_unit&quot;: 486601,
+      &quot;profit_cap_mode&quot;: &quot;UNBOUNDED_BY_STRUCTURE&quot;,
+      &quot;profit_model_scope&quot;: &quot;NOT_APPLICABLE_UNBOUNDED_STRUCTURE&quot;,
+      &quot;quantity&quot;: 9,
+      &quot;reason_code&quot;: &quot;SIMULATED_CANDIDATE_ELIGIBLE&quot;,
+      &quot;selection_sha256&quot;: &quot;c117d9d80911a0d5d98c25258bbe4f414601af75f4c4838989b6794ffe357721&quot;,
+      &quot;selector_policy&quot;: {
+        &quot;bcs&quot;: {
+          &quot;leg_ratio&quot;: &quot;1:1&quot;,
+          &quot;roll_active&quot;: false,
+          &quot;same_expiry_required&quot;: true,
+          &quot;second_best_fallback_allowed&quot;: false,
+          &quot;selector_id&quot;: &quot;SIM_BCS_025_V1&quot;,
+          &quot;short_maximum_delta_ppm&quot;: 300000,
+          &quot;short_minimum_delta_ppm&quot;: 200000,
+          &quot;short_target_delta_ppm&quot;: 250000
+        },
+        &quot;candidate_terminal_policy&quot;: &quot;BOTH_LC0_AND_BCS_MUST_PASS&quot;,
+        &quot;coarse_fine_agreement_required&quot;: true,
+        &quot;lc0&quot;: {
+          &quot;coarse_fine_agreement_required&quot;: true,
+          &quot;maximum_delta_ppm&quot;: 550000,
+          &quot;minimum_calendar_days_after_h20&quot;: 30,
+          &quot;minimum_delta_ppm&quot;: 450000,
+          &quot;require_standard_unadjusted&quot;: true,
+          &quot;required_exercise_style&quot;: &quot;AMERICAN&quot;,
+          &quot;required_multiplier&quot;: 100,
+          &quot;required_right&quot;: &quot;C&quot;,
+          &quot;second_best_fallback_allowed&quot;: false,
+          &quot;selector_id&quot;: &quot;SIM_LC0_050_V1&quot;,
+          &quot;target_delta_ppm&quot;: 500000,
+          &quot;tie_break_order&quot;: [
+            &quot;ABS_DELTA_DISTANCE_ASC&quot;,
+            &quot;STRIKE_NANO_USD_DESC&quot;,
+            &quot;OCC_SYMBOL_ASCII_ASC&quot;
+          ]
+        },
+        &quot;second_best_fallback_allowed&quot;: false
+      },
+      &quot;short_coarse_delta_ppm&quot;: null,
+      &quot;short_fine_delta_ppm&quot;: null,
+      &quot;sizing_loss_basis&quot;: &quot;STRESSED_ENTRY_DEBIT_PLUS_PLANNED_EXIT_FEES_EQUALS_PLANNED_MAX_LOSS&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;stressed_entry_cost_nano_usd_per_contract&quot;: 1051650000000,
+      &quot;total_entry_cost_nano_usd&quot;: 9455850000000,
+      &quot;underlying_mid_nano_usd&quot;: 200000000000
+    },
+    {
+      &quot;base_entry_cost_nano_usd_per_contract&quot;: 623300000000,
+      &quot;binding_constraints&quot;: [
+        &quot;KELLY_DRAWDOWN&quot;
+      ],
+      &quot;capacities&quot;: {
+        &quot;cash&quot;: 319,
+        &quot;delta_notional&quot;: 66,
+        &quot;kelly_drawdown&quot;: 16,
+        &quot;liquidity&quot;: 100,
+        &quot;max_loss&quot;: 327,
+        &quot;planned_loss&quot;: 327
+      },
+      &quot;carrier_id&quot;: &quot;BCS0&quot;,
+      &quot;delta_notional_nano_usd_per_contract&quot;: 4615840000000,
+      &quot;economics&quot;: {
+        &quot;base_entry_cost_nano_usd_per_contract&quot;: 623300000000,
+        &quot;carrier_id&quot;: &quot;BCS0&quot;,
+        &quot;delta_notional_nano_usd_per_contract&quot;: 4615840000000,
+        &quot;execution_assumptions&quot;: {
+          &quot;include_exit_fees_in_max_loss&quot;: true,
+          &quot;long_entry_adverse_ticks&quot;: 1,
+          &quot;short_entry_adverse_ticks&quot;: 1
+        },
+        &quot;fee_components_nano_usd_per_contract&quot;: {
+          &quot;long_entry&quot;: 650000000,
+          &quot;long_exit&quot;: 650000000,
+          &quot;short_entry&quot;: 650000000,
+          &quot;short_exit&quot;: 650000000
+        },
+        &quot;gross_expiry_width_nano_usd_per_contract&quot;: 2000000000000,
+        &quot;liquidity_capacity&quot;: 100,
+        &quot;modeled_expiry_max_profit_nano_usd_per_strategy_unit&quot;: 1375400000000,
+        &quot;planned_exit_fees_nano_usd_per_contract&quot;: 1300000000,
+        &quot;sizing_max_loss_nano_usd_per_contract&quot;: 626600000000,
+        &quot;sizing_planned_loss_nano_usd_per_contract&quot;: 626600000000,
+        &quot;stressed_entry_cost_nano_usd_per_contract&quot;: 625300000000
+      },
+      &quot;expiry_date&quot;: &quot;2026-11-27&quot;,
+      &quot;gross_expiry_width_nano_usd_per_contract&quot;: 2000000000000,
+      &quot;h20_date&quot;: &quot;2026-09-28&quot;,
+      &quot;legs&quot;: [
+        {
+          &quot;ask_nano_usd&quot;: 10500000000,
+          &quot;ask_size&quot;: 100,
+          &quot;bid_nano_usd&quot;: 10480000000,
+          &quot;bid_size&quot;: 100,
+          &quot;coarse_delta_ppm&quot;: 486588,
+          &quot;contract_id&quot;: &quot;GLD   261127C00204000&quot;,
+          &quot;delta_ppm&quot;: 486601,
+          &quot;expiry_date&quot;: &quot;2026-11-27&quot;,
+          &quot;expiry_utc_ns&quot;: 1795813200000000000,
+          &quot;fine_delta_ppm&quot;: 486601,
+          &quot;moneyness&quot;: &quot;OTM&quot;,
+          &quot;ratio&quot;: 1,
+          &quot;side&quot;: &quot;BUY_TO_OPEN&quot;,
+          &quot;strike_nano_usd&quot;: 204000000000
+        },
+        {
+          &quot;ask_nano_usd&quot;: 4300000000,
+          &quot;ask_size&quot;: 100,
+          &quot;bid_nano_usd&quot;: 4280000000,
+          &quot;bid_size&quot;: 100,
+          &quot;coarse_delta_ppm&quot;: 255766,
+          &quot;contract_id&quot;: &quot;GLD   261127C00224000&quot;,
+          &quot;delta_ppm&quot;: 255809,
+          &quot;expiry_date&quot;: &quot;2026-11-27&quot;,
+          &quot;expiry_utc_ns&quot;: 1795813200000000000,
+          &quot;fine_delta_ppm&quot;: 255809,
+          &quot;moneyness&quot;: &quot;OTM&quot;,
+          &quot;ratio&quot;: 1,
+          &quot;side&quot;: &quot;SELL_TO_OPEN&quot;,
+          &quot;strike_nano_usd&quot;: 224000000000
+        }
+      ],
+      &quot;long_coarse_delta_ppm&quot;: 486588,
+      &quot;long_fine_delta_ppm&quot;: 486601,
+      &quot;max_loss_nano_usd&quot;: 10025600000000,
+      &quot;minimum_expiry_date&quot;: &quot;2026-10-28&quot;,
+      &quot;modeled_expiry_max_profit_nano_usd_per_strategy_unit&quot;: 1375400000000,
+      &quot;moneyness&quot;: &quot;OTM&quot;,
+      &quot;net_delta_ppm_per_strategy_unit&quot;: 230792,
+      &quot;profit_cap_mode&quot;: &quot;CAPPED_AT_SHORT_STRIKE&quot;,
+      &quot;profit_model_scope&quot;: &quot;THEORETICAL_EXPIRY_UNDER_SIZING_ASSUMPTIONS&quot;,
+      &quot;quantity&quot;: 16,
+      &quot;reason_code&quot;: &quot;SIMULATED_CANDIDATE_ELIGIBLE&quot;,
+      &quot;selection_sha256&quot;: &quot;0fc58a790c25df96fca9bdbf39b589d942ef86924e7dbd2700b26ce8e2dbf586&quot;,
+      &quot;selector_policy&quot;: {
+        &quot;bcs&quot;: {
+          &quot;leg_ratio&quot;: &quot;1:1&quot;,
+          &quot;roll_active&quot;: false,
+          &quot;same_expiry_required&quot;: true,
+          &quot;second_best_fallback_allowed&quot;: false,
+          &quot;selector_id&quot;: &quot;SIM_BCS_025_V1&quot;,
+          &quot;short_maximum_delta_ppm&quot;: 300000,
+          &quot;short_minimum_delta_ppm&quot;: 200000,
+          &quot;short_target_delta_ppm&quot;: 250000
+        },
+        &quot;candidate_terminal_policy&quot;: &quot;BOTH_LC0_AND_BCS_MUST_PASS&quot;,
+        &quot;coarse_fine_agreement_required&quot;: true,
+        &quot;lc0&quot;: {
+          &quot;coarse_fine_agreement_required&quot;: true,
+          &quot;maximum_delta_ppm&quot;: 550000,
+          &quot;minimum_calendar_days_after_h20&quot;: 30,
+          &quot;minimum_delta_ppm&quot;: 450000,
+          &quot;require_standard_unadjusted&quot;: true,
+          &quot;required_exercise_style&quot;: &quot;AMERICAN&quot;,
+          &quot;required_multiplier&quot;: 100,
+          &quot;required_right&quot;: &quot;C&quot;,
+          &quot;second_best_fallback_allowed&quot;: false,
+          &quot;selector_id&quot;: &quot;SIM_LC0_050_V1&quot;,
+          &quot;target_delta_ppm&quot;: 500000,
+          &quot;tie_break_order&quot;: [
+            &quot;ABS_DELTA_DISTANCE_ASC&quot;,
+            &quot;STRIKE_NANO_USD_DESC&quot;,
+            &quot;OCC_SYMBOL_ASCII_ASC&quot;
+          ]
+        },
+        &quot;second_best_fallback_allowed&quot;: false
+      },
+      &quot;short_coarse_delta_ppm&quot;: 255766,
+      &quot;short_fine_delta_ppm&quot;: 255809,
+      &quot;sizing_loss_basis&quot;: &quot;STRESSED_ENTRY_DEBIT_PLUS_PLANNED_EXIT_FEES_EQUALS_PLANNED_MAX_LOSS&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;stressed_entry_cost_nano_usd_per_contract&quot;: 625300000000,
+      &quot;total_entry_cost_nano_usd&quot;: 9972800000000,
+      &quot;underlying_mid_nano_usd&quot;: 200000000000
+    }
+  ],
+  &quot;crr&quot;: {
+    &quot;bound&quot;: 64,
+    &quot;cache_hits&quot;: 0,
+    &quot;combined_backend_evidence_sha256&quot;: &quot;9e5450c6477b9c37821b27ad5809cffbb25e10648fa93fe8fe56e5c98ef20ab1&quot;,
+    &quot;early_exercise_terminal_count&quot;: 64,
+    &quot;execution_provenance_sha256&quot;: &quot;b3d8fe006497071177ccf2b0aa56202036993468aa6c23350f70599ed0cc00ab&quot;,
+    &quot;failure_count&quot;: 0,
+    &quot;first_failure_ordinal&quot;: null,
+    &quot;input_vector_sha256&quot;: &quot;d42153ba74111d56a68ff2298a3eb3baebb112ca39a6f345505450e9f71ebef7&quot;,
+    &quot;kernel_threads&quot;: 1,
+    &quot;model_id&quot;: &quot;GLD_CALL_DELTA_CRR_AM_V1&quot;,
+    &quot;model_sha256&quot;: &quot;054970e2903152c62c0f71e7bfb10b983795ea8f314d89b033ddda6ed7eca1ad&quot;,
+    &quot;native_build_backend_evidence_sha256&quot;: &quot;02e88b883e8a0f4614ec00a4f08358caa14dc0c712124503395875890fbd1400&quot;,
+    &quot;numerical_semantics_trust_boundary&quot;: &quot;SUPERVISED_CHILD_ATTESTED_PARENT_DID_NOT_RECOMPUTE_CRR_NUMERICS&quot;,
+    &quot;requested&quot;: 64,
+    &quot;semantic_output_sha256&quot;: &quot;0e332a19878a320786da071940296914cb3e41488a4b59971d24ed3d63811a29&quot;,
+    &quot;semantic_terminal_vector_count&quot;: 64,
+    &quot;started&quot;: 64,
+    &quot;status&quot;: &quot;EXACT64_PASS&quot;,
+    &quot;terminal&quot;: 64,
+    &quot;worker_count&quot;: 8
+  },
+  &quot;exit_plan&quot;: {
+    &quot;expiry_safety&quot;: &quot;FULL_EXIT_REQUIRED_BEFORE_CONTRACT_SAFETY_BOUNDARY&quot;,
+    &quot;fixed_take_profit&quot;: false,
+    &quot;gate_a_invalidation&quot;: &quot;EXIT_REVIEW_REQUIRED_IF_SIM_A1_RANGE_HOLD_V1_FAILS&quot;,
+    &quot;latest_exit_horizon&quot;: &quot;H20&quot;,
+    &quot;latest_full_exit_date&quot;: &quot;2026-09-28&quot;,
+    &quot;lc1_roll_up&quot;: &quot;NOT_ACTIVE_IN_SIM_V1&quot;
+  },
+  &quot;gate_a&quot;: {
+    &quot;input_fact_sha256&quot;: &quot;82df1fb764bf72f64169510e07d1318884710f3708428185d9eb11e7ab3514f6&quot;,
+    &quot;max_event_utc_ns&quot;: 1787928298000000000,
+    &quot;max_receive_utc_ns&quot;: 1787928299000000000,
+    &quot;metrics&quot;: {
+      &quot;breakout_nano_usd&quot;: 199400000000,
+      &quot;current_sma200_nano_usd&quot;: 189050000000,
+      &quot;current_sma50_nano_usd&quot;: 196550000000,
+      &quot;minute_1044_close_nano_usd&quot;: 199690000000,
+      &quot;prior_close_nano_usd&quot;: 199000000000,
+      &quot;range_hold_above_count&quot;: 15,
+      &quot;range_hold_required_count&quot;: 10,
+      &quot;sma50_20_sessions_ago_nano_usd&quot;: 194550000000
+    },
+    &quot;predicates&quot;: {
+      &quot;minute_1044_close_gt_breakout&quot;: true,
+      &quot;prior_close_gt_sma50&quot;: true,
+      &quot;range_hold_count_met&quot;: true,
+      &quot;sma50_gt_sma200&quot;: true,
+      &quot;sma50_rising_20_sessions&quot;: true
+    },
+    &quot;reason_code&quot;: &quot;GATE_A_PASS&quot;,
+    &quot;rule_version&quot;: &quot;SIM_A1_RANGE_HOLD_V1&quot;,
+    &quot;state&quot;: &quot;PASS&quot;
+  },
+  &quot;identity&quot;: {
+    &quot;actionable&quot;: false,
+    &quot;broker_order_count&quot;: 0,
+    &quot;bundle_id&quot;: &quot;gld-synthetic-20260828-a-v1&quot;,
+    &quot;classification&quot;: &quot;SIMULATION_ONLY&quot;,
+    &quot;cutoff_utc_ns&quot;: 1787928300000000000,
+    &quot;decision_result_sha256&quot;: &quot;6939c8e78728a0b8ae5cfc1b819d19d68ea526fe5f3425c0e8b4f0f5fac4b0cf&quot;,
+    &quot;decision_scope&quot;: &quot;ENTRY_SIMULATION_ONLY&quot;,
+    &quot;manifest_sha256&quot;: &quot;6d2af36376bef23b5c2c5fdabbb20f815f5049a7825b6e83398b80f09de6668f&quot;,
+    &quot;manual_control&quot;: &quot;SIMULATION_SELECTION_IN_CODEX_ONLY&quot;,
+    &quot;owner_selection_required&quot;: true,
+    &quot;raw_content_sha256&quot;: &quot;4fe396548de650c25f4002f76565b986879f7bca7c99c3565216323979b4679c&quot;,
+    &quot;reason_code&quot;: &quot;BOTH_CARRIERS_PASS_OWNER_SELECTION_REQUIRED&quot;,
+    &quot;rule_package_version&quot;: &quot;SIM_GLD_PIPELINE_V1&quot;,
+    &quot;rule_sha256&quot;: &quot;132f35810be964eca2ade1aba93a17154ac3092466c24c0ea5fccb86bc044d7b&quot;,
+    &quot;schema_version&quot;: &quot;GLD_SIMULATION_DECISION_RESULT_V2&quot;,
+    &quot;status&quot;: &quot;SIMULATED_OWNER_SELECTION_REQUIRED&quot;,
+    &quot;trading_date&quot;: &quot;2026-08-28&quot;
+  },
+  &quot;risk_context&quot;: {
+    &quot;account_as_of_utc_ns&quot;: 1787928300000000000,
+    &quot;bcs_sizing&quot;: {
+      &quot;binding_constraints&quot;: [
+        &quot;KELLY_DRAWDOWN&quot;
+      ],
+      &quot;capacities&quot;: {
+        &quot;cash&quot;: 319,
+        &quot;delta_notional&quot;: 66,
+        &quot;kelly_drawdown&quot;: 16,
+        &quot;liquidity&quot;: 100,
+        &quot;max_loss&quot;: 327,
+        &quot;planned_loss&quot;: 327
+      },
+      &quot;drawdown_factor_ppm&quot;: 1000000,
+      &quot;drawdown_ppm&quot;: 38461,
+      &quot;eligible_bankroll_nano_usd&quot;: 205000000000000,
+      &quot;full_kelly_ppm&quot;: 100000,
+      &quot;half_kelly_ppm&quot;: 50000,
+      &quot;missing_fields&quot;: [],
+      &quot;per_contract_delta_notional_nano_usd&quot;: 4615840000000,
+      &quot;per_contract_max_loss_nano_usd&quot;: 626600000000,
+      &quot;quantity&quot;: 16,
+      &quot;reason_code&quot;: &quot;SIZING_PASS&quot;,
+      &quot;state&quot;: &quot;PASS&quot;
+    },
+    &quot;candidate_terminal_policy&quot;: &quot;BOTH_LC0_AND_BCS_MUST_PASS&quot;,
+    &quot;drawdown_factor_ppm&quot;: 1000000,
+    &quot;drawdown_ppm&quot;: 38461,
+    &quot;eligible_bankroll_nano_usd&quot;: 205000000000000,
+    &quot;frozen_kelly_applicable_carriers&quot;: [
+      &quot;LC0&quot;,
+      &quot;BCS0&quot;
+    ],
+    &quot;frozen_kelly_receipt_id&quot;: &quot;SIM_GLD_ROBUST_FULL_KELLY_20260828_V1&quot;,
+    &quot;frozen_kelly_return_distribution_id&quot;: &quot;SIM_DUAL_CARRIER_CONSERVATIVE_V1&quot;,
+    &quot;frozen_kelly_strategy_rule_package_id&quot;: &quot;SIM_GLD_PIPELINE_V1&quot;,
+    &quot;full_kelly_ppm&quot;: 100000,
+    &quot;half_kelly_ppm&quot;: 50000,
+    &quot;lc0_sizing&quot;: {
+      &quot;binding_constraints&quot;: [
+        &quot;KELLY_DRAWDOWN&quot;
+      ],
+      &quot;capacities&quot;: {
+        &quot;cash&quot;: 190,
+        &quot;delta_notional&quot;: 31,
+        &quot;kelly_drawdown&quot;: 9,
+        &quot;liquidity&quot;: 100,
+        &quot;max_loss&quot;: 194,
+        &quot;planned_loss&quot;: 194
+      },
+      &quot;drawdown_factor_ppm&quot;: 1000000,
+      &quot;drawdown_ppm&quot;: 38461,
+      &quot;eligible_bankroll_nano_usd&quot;: 205000000000000,
+      &quot;full_kelly_ppm&quot;: 100000,
+      &quot;half_kelly_ppm&quot;: 50000,
+      &quot;missing_fields&quot;: [],
+      &quot;per_contract_delta_notional_nano_usd&quot;: 9732020000000,
+      &quot;per_contract_max_loss_nano_usd&quot;: 1052300000000,
+      &quot;quantity&quot;: 9,
+      &quot;reason_code&quot;: &quot;SIZING_PASS&quot;,
+      &quot;state&quot;: &quot;PASS&quot;
+    },
+    &quot;maximum_gld_equivalent_delta_notional_bankroll_ppm&quot;: 1500000,
+    &quot;minimum_post_trade_settled_cash_nlv_ppm&quot;: 100000,
+    &quot;planned_loss_equals_maximum_loss&quot;: true,
+    &quot;policy_id&quot;: &quot;SIM_HALF_KELLY_RISK_V1&quot;,
+    &quot;positive_realized_profit_reinvestment_ppm&quot;: 500000,
+    &quot;realized_loss_effect_ppm&quot;: 1000000,
+    &quot;separate_max_loss_budget_mode&quot;: &quot;ELIGIBLE_BANKROLL_HARD_CEILING_SIMULATION_ONLY&quot;,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;sticky_drawdown_lock_active&quot;: false,
+    &quot;unrealized_profit_expands_bankroll&quot;: false
+  },
+  &quot;simulation_limitations&quot;: [
+    &quot;SYNTHETIC_INPUTS_ONLY&quot;,
+    &quot;NOT_PROMOTABLE_TO_LIVE_DECISION&quot;,
+    &quot;NO_BROKER_CONNECTION&quot;,
+    &quot;NO_ORDER_CREATION_OR_SUBMISSION&quot;,
+    &quot;LC1_ROLL_UP_NOT_ACTIVE&quot;
+  ]
+}</pre></details>
+    <footer>
+      <p>本文件只呈现程序生成的模拟事实，不是交易建议，不创建券商订单，也不具备下单权限。</p>
+    </footer>
+  </main>
+</body>
+</html>

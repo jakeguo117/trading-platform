@@ -6,6 +6,7 @@ __pycache__/
 htmlcov/
 .venv/
 venv/
+.build/
 
 # Local credentials and environment overrides
 .env
@@ -15,3 +16,24 @@ venv/
 # Superpowers runtime state; keep generated HTML demos as project evidence
 .superpowers/brainstorm/.last-*
 .superpowers/brainstorm/*/state/
+.gstack/
+
+# Curated repository evidence. Keep final accepted checkpoints only.
+artifacts/*
+!artifacts/gld-data-contracts-v1/
+!artifacts/gld-data-contracts-v1/**
+!artifacts/gld-simulation-v1/
+!artifacts/gld-simulation-v1/**
+!artifacts/gld-simulation-v2/
+!artifacts/gld-simulation-v2/**
+!artifacts/gld-management-score-f0-owner-acceptance-v1/
+!artifacts/gld-management-score-f0-owner-acceptance-v1/**
+!artifacts/gld-entry-decision-f0-owner-acceptance-v1/
+!artifacts/gld-entry-decision-f0-owner-acceptance-v1/**
+
+# Preserve the final formal performance evidence, not failed/intermediate runs.
+benchmarks/results/*
+!benchmarks/results/p1-20260829-1031-formal-v5/
+!benchmarks/results/p1-20260829-1031-formal-v5/**
+!benchmarks/results/p1-20260829-1048-t1-formal-v2/
+!benchmarks/results/p1-20260829-1048-t1-formal-v2/**

@@ -1,0 +1,4 @@
+# Preserve byte-identical historical simulation cards while excluding their
+# known generator-emitted end-of-line padding from Git whitespace diagnostics.
+artifacts/gld-simulation-v1/no-action/decision-card.html whitespace=-blank-at-eol
+artifacts/gld-simulation-v1/no-decision/decision-card.html whitespace=-blank-at-eol

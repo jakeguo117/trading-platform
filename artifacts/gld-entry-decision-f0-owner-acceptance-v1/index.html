@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trading Platform｜GLD 建仓决策 R1 人工验收</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; } main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    .subtitle { margin: 0 0 18px; color: #52616b; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400; border-radius: 10px;
+      background: #fff4e6; font-weight: 650; line-height: 1.55; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-top: 16px; }
+    .metric, .owner-card, .stage-card, .plan-card { padding: 16px; border: 1px solid #d9e1e8;
+      border-radius: 12px; background: white; }
+    .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    .owner-grid { display: grid; gap: 18px; margin-top: 20px; }
+    .owner-card h2 { margin: 0 0 12px; } .owner-card h3 { margin: 16px 0 6px; }
+    .stage-grid { display: grid; gap: 16px; margin-top: 18px; }
+    .stage-card h3, .plan-card h3 { margin: 0 0 12px; }
+    .stage-fields { display: grid; grid-template-columns: minmax(150px, 0.3fr) 1fr;
+      gap: 8px 16px; margin: 0; }
+    .stage-fields dt { color: #52616b; font-weight: 650; }
+    .stage-fields dd { margin: 0; line-height: 1.55; }
+    details { margin-top: 14px; padding: 10px 12px; border: 1px solid #e1e7ed;
+      border-radius: 8px; background: #f8fafc; }
+    summary { cursor: pointer; color: #34495e; font-weight: 650; }
+    .details-table { margin-top: 10px; }
+    .section-note { color: #52616b; line-height: 1.55; }
+    .pass { color: #155724; background: #eaf7ed; padding: 9px; border-radius: 8px;
+      font-weight: 700; } .fail { color: #842029; background: #f8d7da; padding: 9px;
+      border-radius: 8px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; } th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    a { color: #0b62a4; } .pending { color: #8a4b08; font-weight: 700; }
+  </style>
+</head>
+<body><main>
+<h1>Trading Platform｜GLD 建仓决策 R1 人工验收</h1>
+<p class="subtitle">本地 synthetic Research F0 · 不连接真实行情、账户或券商</p>
+<p class="boundary">这里验收的是：相同事实是否稳定通过八步判断，最终只给出一个明确状态；两个方案都合格时，是否仍有固定首选和备选。</p>
+<div class="owner-grid"><section class="owner-card"><h2>1. 缺数据与Gate失败是否正确区分</h2><h3>要确认什么</h3><p>程序能否区分“事实不足，不能判断”和“事实完整，但条件不通过”？</p><h3>已冻结的规则</h3><p>缺必要事实输出NO_DECISION；事实完整而Gate失败输出NO_ACTION。</p><h3>程序实际输出</h3><ul><li>数据不完整：事实或policy authority不足，程序不形成判断。 <a href="missing_input/final-decision-card.html">查看卡片</a></li><li>数据完整但Gate失败：事实已评估，但没有合格且数量大于0的方案。 <a href="gate_fail/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>2. Gate是否按两个组和固定政策判断</h2><h3>要确认什么</h3><p>Trend和Breakout是否分别计数，并按冻结的3/3与2/2政策判断？</p><h3>已冻结的规则</h3><p>两个组必须分别达到quota；一组的富余不能补另一组的不足。</p><h3>程序实际输出</h3><ul><li>数据完整但Gate失败：事实已评估，但没有合格且数量大于0的方案。 <a href="gate_fail/final-decision-card.html">查看卡片</a></li><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>3. LC0与BCS0是否真正独立</h2><h3>要确认什么</h3><p>两个结构是否拥有各自的筛选、economics、evidence、Kelly和失败原因？</p><h3>已冻结的规则</h3><p>LC0与BCS0分别评估，不共享winner、收益分布或Kelly receipt。</p><h3>程序实际输出</h3><ul><li>只有LC0合格：只有LC0合格，程序只输出这一套方案。 <a href="lc_only/final-decision-card.html">查看卡片</a></li><li>只有BCS0合格：只有BCS0合格，程序只输出这一套方案。 <a href="bcs_only/final-decision-card.html">查看卡片</a></li><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>4. 一个结构失败时另一个是否仍可输出</h2><h3>要确认什么</h3><p>程序会不会因为一个结构失败而错误取消另一个完整合格方案？</p><h3>已冻结的规则</h3><p>只有一个合格时输出该单一方案，不要求两个结构同时通过。</p><h3>程序实际输出</h3><ul><li>只有LC0合格：只有LC0合格，程序只输出这一套方案。 <a href="lc_only/final-decision-card.html">查看卡片</a></li><li>只有BCS0合格：只有BCS0合格，程序只输出这一套方案。 <a href="bcs_only/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>5. 数量是否取所有硬cap的最小值</h2><h3>要确认什么</h3><p>Kelly、账户、现金、Delta、流动性和外部风险是否都能限制数量？</p><h3>已冻结的规则</h3><p>safe quantity取全部硬cap最小值；任何适用硬cap为0都不能向上补成1。</p><h3>程序实际输出</h3><ul><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li><li>硬风险容量为零：事实已评估，但没有合格且数量大于0的方案。 <a href="zero_cap/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>6. 双合格时是否有确定首选和备选</h2><h3>要确认什么</h3><p>两个方案都合格时，程序是否仍给出明确preference，并处理完全平局？</p><h3>已冻结的规则</h3><p>先比较lower-bound预期总净利润；完全平局使用固定LC0 tie-break。</p><h3>程序实际输出</h3><ul><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li><li>两个方案完全平局：程序输出LC0为首选、BCS0为备选。 <a href="exact_tie/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>7. 每个方案是否绑定完整退出政策</h2><h3>要确认什么</h3><p>最终方案是否在建仓时就绑定H20、Hard Stop、失效确认与expiry safety？</p><h3>已冻结的规则</h3><p>每个输出计划均携带自身退出政策和Management policy hash。</p><h3>程序实际输出</h3><ul><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>8. 只看卡片是否能复述全过程</h2><h3>要确认什么</h3><p>不查看代码时，能否从卡片说明输入、Gate、结构、数量、偏好和退出绑定？</p><h3>已冻结的规则</h3><p>Final Decision Card直接展示最终计划和顺序固定的八步Decision Trace。</p><h3>程序实际输出</h3><ul><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>9. 中途停止是否说明位置、原因和恢复条件</h2><h3>要确认什么</h3><p>流程fail closed时，是否保留全部八个stage并解释为何未继续？</p><h3>已冻结的规则</h3><p>失败stage记录reason/recovery；所有后续stage保留为NOT_RUN而不是消失。</p><h3>程序实际输出</h3><ul><li>数据不完整：事实或policy authority不足，程序不形成判断。 <a href="missing_input/final-decision-card.html">查看卡片</a></li><li>数据完整但Gate失败：事实已评估，但没有合格且数量大于0的方案。 <a href="gate_fail/final-decision-card.html">查看卡片</a></li><li>硬风险容量为零：事实已评估，但没有合格且数量大于0的方案。 <a href="zero_cap/final-decision-card.html">查看卡片</a></li><li>政策权限缺失：事实或policy authority不足，程序不形成判断。 <a href="policy_missing/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section><section class="owner-card"><h2>10. 相同输入是否完全相同且broker writes恒为0</h2><h3>要确认什么</h3><p>跨进程和Call/economics列表顺序变化后，JSON、hash与卡片是否仍逐字节相同？</p><h3>已冻结的规则</h3><p>相同事实经canonical排序后产生相同输出；所有场景broker_order_count=0。</p><h3>程序实际输出</h3><ul><li>数据不完整：事实或policy authority不足，程序不形成判断。 <a href="missing_input/final-decision-card.html">查看卡片</a></li><li>数据完整但Gate失败：事实已评估，但没有合格且数量大于0的方案。 <a href="gate_fail/final-decision-card.html">查看卡片</a></li><li>只有LC0合格：只有LC0合格，程序只输出这一套方案。 <a href="lc_only/final-decision-card.html">查看卡片</a></li><li>只有BCS0合格：只有BCS0合格，程序只输出这一套方案。 <a href="bcs_only/final-decision-card.html">查看卡片</a></li><li>两个方案都合格：程序输出BCS0为首选、LC0为备选。 <a href="both_qualified/final-decision-card.html">查看卡片</a></li><li>两个方案完全平局：程序输出LC0为首选、BCS0为备选。 <a href="exact_tie/final-decision-card.html">查看卡片</a></li><li>硬风险容量为零：事实已评估，但没有合格且数量大于0的方案。 <a href="zero_cap/final-decision-card.html">查看卡片</a></li><li>政策权限缺失：事实或policy authority不足，程序不形成判断。 <a href="policy_missing/final-decision-card.html">查看卡片</a></li></ul><p class="pass">✓ 程序实际输出与预期一致</p></section></div>
+<h2>Jake人工确认</h2>
+<p class="boundary">当前状态：等待Jake确认。请逐项查看；全部符合时回复“R1全部认同”。自动证据不能代替人工接受。</p>
+<p><a href="engineering-evidence.html">查看完整工程证据、canonical JSON和hash</a></p>
+</main></body>
+</html>

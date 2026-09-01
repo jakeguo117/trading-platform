@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trading Platform｜GLD 持仓管理验收</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; }
+    main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400;
+      border-radius: 10px; background: #fff4e6; font-weight: 650; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px; margin-top: 16px; }
+    .metric { padding: 14px; border: 1px solid #d9e1e8; border-radius: 10px;
+      background: white; } .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; } th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    a { color: #0b62a4; } .pending { color: #8a4b08; font-weight: 700; }
+    .subtitle { margin: 0 0 20px; color: #52616b; font-size: 17px; }
+    .owner-grid { display: grid; gap: 18px; margin-top: 22px; }
+    .owner-card { padding: 20px; border: 1px solid #cbd5df; border-radius: 14px;
+      background: white; box-shadow: 0 2px 8px rgba(22, 32, 42, 0.05); }
+    .owner-card h2 { margin: 0 0 16px; font-size: 21px; }
+    .owner-card h3 { margin: 16px 0 6px; font-size: 15px; color: #44515c; }
+    .owner-card p { margin: 0; line-height: 1.65; }
+    .owner-card li { margin: 7px 0; line-height: 1.55; }
+    .owner-pass { margin-top: 16px !important; padding: 10px 12px;
+      border-radius: 9px; color: #155724; background: #eaf7ed; font-weight: 700; }
+    .owner-fail { margin-top: 16px !important; padding: 10px 12px;
+      border-radius: 9px; color: #842029; background: #f8d7da; font-weight: 700; }
+    .owner-next { margin-top: 24px; padding: 18px; border: 1px solid #9eb8ce;
+      border-radius: 12px; background: #edf6ff; }
+  </style>
+</head>
+<body><main>
+<h1>Trading Platform｜GLD 持仓管理验收</h1>
+<p class="subtitle">F0 研究验证版 · 本地模拟数据 · 不连接真实交易</p>
+<p class="boundary">这里验收的是：程序是否确实执行了你已经认可的六条持仓管理规则。工程细节已移到第二层。</p>
+<div class="owner-grid"><section class="owner-card" data-owner-group="neutral-position"><h2>1. 中性环境是否保持仓位</h2><h3>我们要确认什么</h3><p>分数处于中性区时，程序会不会因为轻微波动随意调仓？</p><h3>已认可的管理规则</h3><p>40–69.99分是真正的保持区；没有外部风险强制要求时，仓位不变。</p><h3>程序实际做了什么</h3><ul><li>中性环境：分数50.00；分数处于保持区；程序保持4份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section><section class="owner-card" data-owner-group="defensive-confirmation"><h2>2. 转弱是否先等待、连续确认后才分层减仓</h2><h3>我们要确认什么</h3><p>第一次转弱是否先观察，只有连续转弱后才降低风险？</p><h3>已认可的管理规则</h3><p>单日转弱先保持；第二个完整交易日仍弱才减仓。中度弱势最多保留75%，严重弱势最多保留50%，不足一个完整单位时不拆分。</p><h3>程序实际做了什么</h3><ul><li>第一天转弱：分数30.00；只有第一天转弱，等待连续确认；程序保持4份。</li><li>连续两天中度转弱：分数30.00；连续转弱已经确认；程序从4份降低到3份。</li><li>连续两天严重转弱：分数8.51；连续转弱已经确认；程序从4份降低到2份。</li><li>只剩一个完整单位：分数8.51；没有可拆分的完整单位；程序保持1份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section><section class="owner-card" data-owner-group="recovery-confirmation"><h2>3. 恢复是否先确认、之后逐层加回</h2><h3>我们要确认什么</h3><p>出现强势恢复时，程序会不会一次性把仓位全部加回来？</p><h3>已认可的管理规则</h3><p>第一天恢复只等待；连续第二天确认后，每个合格管理日只恢复一个层级，且永不超过原始批准仓位。</p><h3>程序实际做了什么</h3><ul><li>第一天恢复：分数80.00；只有第一天恢复，等待连续确认；程序保持2份。</li><li>连续两天恢复：分数80.00；恢复已经确认，本次只恢复一个层级；程序从2份逐层恢复到3份。</li><li>下一个合格恢复日：分数80.00；恢复已经确认，本次只恢复一个层级；程序从3份逐层恢复到4份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section><section class="owner-card" data-owner-group="terminal-safety"><h2>4. Hard Stop和终局锁定是否覆盖高分</h2><h3>我们要确认什么</h3><p>即使技术分数很高，安全退出和已经结束的持仓是否仍具有最高优先级？</p><h3>已认可的管理规则</h3><p>Hard Stop等终局事实直接要求退出；同一持仓一旦终局锁定，即使以后重新转强也不能重新加仓。</p><h3>程序实际做了什么</h3><ul><li>高分时触发Hard Stop：分数85.00；Hard Stop具有最高优先级；程序退出至0份。</li><li>已经终局退出后再次转强：分数80.00；该持仓已经终局结束，禁止重新加仓；程序保持0份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section><section class="owner-card" data-owner-group="data-quality"><h2>5. 旧报价或缺数据是否停止行动</h2><h3>我们要确认什么</h3><p>行情事实不新鲜或无法完整计算时，程序会不会猜测并继续调仓？</p><h3>已认可的管理规则</h3><p>旧报价阻止调仓；必需指标无法评估时不产生管理决定，也不使用旧值或单指标替代。</p><h3>程序实际做了什么</h3><ul><li>恢复条件满足但报价过期：分数80.00；报价已经过期；程序不执行新的调仓，保持2份。</li><li>必需指标无法完整评估：分数无法评估；必需事实无法完整评估；程序不执行新的调仓，保持4份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section><section class="owner-card" data-owner-group="bcs-integrity"><h2>6. BCS是否始终保持完整1:1组合</h2><h3>我们要确认什么</h3><p>牛市价差在减仓或出现残腿时，程序是否始终保护完整组合？</p><h3>已认可的管理规则</h3><p>BCS只能按完整1:1组合调整；存在残腿或对账冲突时不得继续执行新的仓位动作。</p><h3>程序实际做了什么</h3><ul><li>BCS连续转弱：分数30.00；连续转弱已经确认；程序从4份降低到3份。</li><li>BCS存在残腿：分数8.51；组合存在残腿；程序不执行新的调仓，保持4份。</li></ul><p class="owner-pass">✓ 程序表现与已认可规则一致（自动证据通过）</p><p><a href="engineering-evidence.html">查看工程证据（通常不需要打开）</a></p></section></div>
+<div class="owner-next">
+  <h2>你的人工确认</h2>
+  <p>当前状态：<strong>等待Jake确认</strong>。看完后只需回复“1–6全部认同”；如有异议，请回复对应编号和原因。</p>
+  <p>本页不是收益证明，也不是交易指令；程序没有连接券商或真实账户。</p>
+</div>
+</main></body>
+</html>

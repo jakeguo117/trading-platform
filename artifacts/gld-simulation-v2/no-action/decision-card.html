@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>GLD 模拟决策卡：今天不建仓</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172019;
+      --muted: #5c665e;
+      --paper: #f4f3ed;
+      --panel: #fffef9;
+      --line: #d5d7cf;
+      --forest: #173f2e;
+      --forest-soft: #e7efe9;
+      --amber: #9a640e;
+      --amber-soft: #fff2cf;
+      --danger: #8a2929;
+      --danger-soft: #fae5e2;
+      --shadow: 0 10px 30px rgba(23, 32, 25, .08);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .safety-banner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 12px 16px;
+      background: #102c21;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-align: center;
+    }
+    .safety-banner span + span::before { content: "｜"; margin: 0 10px; color: #c8d8cf; }
+    main { width: min(1120px, calc(100% - 32px)); margin: 28px auto 56px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 26ch;
+      margin-bottom: 12px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    h2 { margin-bottom: 14px; font-size: clamp(23px, 3vw, 32px); line-height: 1.25; }
+    h3 { margin-bottom: 12px; font-size: 20px; line-height: 1.35; overflow-wrap: anywhere; }
+    .decision-hero {
+      padding: clamp(24px, 4vw, 42px);
+      border-left: 8px solid var(--forest);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .status-no-action { border-left-color: var(--amber); }
+    .status-no-decision { border-left-color: var(--danger); }
+    .status-kicker { margin-bottom: 8px; color: var(--muted); font-weight: 800; }
+    .status-no-action .status-kicker { color: var(--amber); }
+    .status-no-decision .status-kicker { color: var(--danger); }
+    .decision-lead { max-width: 72ch; margin-bottom: 10px; font-size: 18px; }
+    .data-time { margin-bottom: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .content-section, .state-explanation, .next-step, .audit-details {
+      margin-top: 24px;
+      padding: clamp(20px, 3vw, 30px);
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+    .section-intro { color: var(--muted); }
+    .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .choice-card, .order-card { min-width: 0; border: 1px solid var(--line); background: #fff; }
+    .choice-heading { padding: 18px 20px 10px; background: var(--forest-soft); }
+    .choice-label { margin-bottom: 4px; color: var(--muted); font-weight: 750; }
+    .choice-heading h3 { margin-bottom: 0; }
+    .table-scroll { max-width: 100%; overflow-x: auto; }
+    .table-scroll:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
+    caption { padding: 12px 16px; color: var(--muted); font-weight: 700; text-align: left; }
+    th, td { padding: 11px 13px; border-bottom: 1px solid #e7e8e2; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-weight: 700; }
+    tbody th { width: 42%; }
+    tr:last-child th, tr:last-child td { border-bottom: 0; }
+    .money { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .order-stack { display: grid; gap: 18px; }
+    .order-card { padding: 20px; }
+    .order-table { min-width: 860px; }
+    .structure-note, .combo-warning, .quote-warning { padding: 12px 14px; background: var(--forest-soft); }
+    .combo-warning, .quote-warning { background: var(--amber-soft); }
+    .live-blockers { margin-top: 18px; padding: 18px; border-left: 5px solid var(--danger); background: var(--danger-soft); }
+    .live-blockers p:last-child { margin-bottom: 0; }
+    .next-step { border: 2px solid var(--forest); background: var(--forest-soft); }
+    .next-step p:last-child { margin-bottom: 0; }
+    .checklist, .plain-list { margin: 0; padding-left: 1.35rem; }
+    .checklist li, .plain-list li { margin: 8px 0; }
+    .check-pass strong { color: var(--forest); }
+    .check-fail strong { color: var(--danger); }
+    .audit-details summary {
+      min-height: 44px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 44px;
+    }
+    .audit-details summary:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 3px;
+    }
+    .audit-details pre {
+      max-height: 640px;
+      margin: 12px 0 0;
+      padding: 16px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: #f7f7f3;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .audit-details pre:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 3px;
+    }
+    footer { margin-top: 24px; color: var(--muted); font-size: 15px; }
+    @media (max-width: 768px) {
+      main { width: min(100% - 20px, 1120px); margin-top: 10px; }
+      .decision-hero, .content-section, .state-explanation, .next-step, .audit-details { padding: 20px; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .choice-card, .order-card { width: 100%; }
+      h1 { max-width: 100%; }
+    }
+    @media (max-width: 420px) {
+      main { width: 100%; margin-bottom: 32px; }
+      .decision-hero, .content-section, .state-explanation, .next-step, .audit-details {
+        margin-top: 12px;
+        padding: 18px 14px;
+        border-right: 0;
+        border-left-width: 0;
+      }
+      .decision-hero { border-left-width: 6px; }
+      th, td { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="safety-banner" aria-label="模拟安全边界">
+    <span>仅模拟</span><span>合成数据</span><span>禁止真实下单</span>
+  </header>
+  <main id="main-content">
+    <header class="decision-hero status-no-action">
+      <p class="status-kicker">GLD 建仓模拟决策卡</p>
+      <h1>今天不建仓</h1>
+      <p class="decision-lead">规则已完成判断：当前建仓条件不成立。</p>
+      <p class="data-time">数据时点（纽约）：2026-08-28 10:45 ET</p>
+    </header>
+    <section class="state-explanation" aria-labelledby="state-reason-title"><h2 id="state-reason-title">为什么今天不建仓</h2><p>Gate A 没有完整通过，因此程序没有生成任何候选方案。</p></section><section class="content-section" aria-labelledby="gate-title"><h2 id="gate-title">未通过的 Gate A 条件</h2><ul class="checklist"><li class="check-fail">盘中突破：10:44 收盘价 $199.25；突破价 $199.40；要求前者更高：未通过</li><li class="check-fail">突破后保持分钟数：6 / 10，未通过</li></ul></section><section class="next-step" aria-labelledby="next-step-title"><h2 id="next-step-title">下一步</h2><p><strong>等待新的完整快照后重新运行。</strong></p></section>
+    <details class="audit-details"><summary>审计详情（机器字段）</summary><p>包含 hash、CRR、selector、容量以及 nano / ppm / ns 原始字段。</p><pre role="region" tabindex="0" aria-label="审计详情，可滚动">{
+  &quot;candidates&quot;: [],
+  &quot;crr&quot;: {
+    &quot;failure_count&quot;: 0,
+    &quot;model_id&quot;: &quot;GLD_CALL_DELTA_CRR_AM_V1&quot;,
+    &quot;model_sha256&quot;: &quot;054970e2903152c62c0f71e7bfb10b983795ea8f314d89b033ddda6ed7eca1ad&quot;,
+    &quot;requested&quot;: 0,
+    &quot;status&quot;: &quot;NOT_RUN_GATE_FAILED&quot;,
+    &quot;terminal&quot;: 0
+  },
+  &quot;exit_plan&quot;: {
+    &quot;expiry_safety&quot;: &quot;FULL_EXIT_REQUIRED_BEFORE_CONTRACT_SAFETY_BOUNDARY&quot;,
+    &quot;fixed_take_profit&quot;: false,
+    &quot;gate_a_invalidation&quot;: &quot;EXIT_REVIEW_REQUIRED_IF_SIM_A1_RANGE_HOLD_V1_FAILS&quot;,
+    &quot;latest_exit_horizon&quot;: &quot;H20&quot;,
+    &quot;latest_full_exit_date&quot;: &quot;2026-09-28&quot;,
+    &quot;lc1_roll_up&quot;: &quot;NOT_ACTIVE_IN_SIM_V1&quot;
+  },
+  &quot;gate_a&quot;: {
+    &quot;input_fact_sha256&quot;: &quot;1128f85c2775bf5bb3b7b2f0a96c6c16e46ff507355a06be9f37b35fda9d9c20&quot;,
+    &quot;max_event_utc_ns&quot;: 1787928298000000000,
+    &quot;max_receive_utc_ns&quot;: 1787928299000000000,
+    &quot;metrics&quot;: {
+      &quot;breakout_nano_usd&quot;: 199400000000,
+      &quot;current_sma200_nano_usd&quot;: 189050000000,
+      &quot;current_sma50_nano_usd&quot;: 196550000000,
+      &quot;minute_1044_close_nano_usd&quot;: 199250000000,
+      &quot;prior_close_nano_usd&quot;: 199000000000,
+      &quot;range_hold_above_count&quot;: 6,
+      &quot;range_hold_required_count&quot;: 10,
+      &quot;sma50_20_sessions_ago_nano_usd&quot;: 194550000000
+    },
+    &quot;predicates&quot;: {
+      &quot;minute_1044_close_gt_breakout&quot;: false,
+      &quot;prior_close_gt_sma50&quot;: true,
+      &quot;range_hold_count_met&quot;: false,
+      &quot;sma50_gt_sma200&quot;: true,
+      &quot;sma50_rising_20_sessions&quot;: true
+    },
+    &quot;reason_code&quot;: &quot;GATE_A_1044_CLOSE_NOT_ABOVE_BREAKOUT&quot;,
+    &quot;rule_version&quot;: &quot;SIM_A1_RANGE_HOLD_V1&quot;,
+    &quot;state&quot;: &quot;FAIL&quot;
+  },
+  &quot;identity&quot;: {
+    &quot;actionable&quot;: false,
+    &quot;broker_order_count&quot;: 0,
+    &quot;bundle_id&quot;: &quot;gld-synthetic-20260828-b-v1&quot;,
+    &quot;classification&quot;: &quot;SIMULATION_ONLY&quot;,
+    &quot;cutoff_utc_ns&quot;: 1787928300000000000,
+    &quot;decision_result_sha256&quot;: &quot;9756251fa84890bde3229f9fef39702f802ddf0cb8b7a336e9dccf03e197d6a0&quot;,
+    &quot;decision_scope&quot;: &quot;ENTRY_SIMULATION_ONLY&quot;,
+    &quot;manifest_sha256&quot;: &quot;1866f1eec176b2ed21f0732d647effed64202d27d1a8d579eb8b7d167a713b5d&quot;,
+    &quot;manual_control&quot;: &quot;NO_ACTION_NO_ORDER_AUTHORITY&quot;,
+    &quot;owner_selection_required&quot;: false,
+    &quot;raw_content_sha256&quot;: &quot;de6d0815471011667ce197c83dd8aefa3c3ef6c2189c88b6381c1108b5c6f1c1&quot;,
+    &quot;reason_code&quot;: &quot;GATE_A_COMPLETE_NOT_PASSED&quot;,
+    &quot;rule_package_version&quot;: &quot;SIM_GLD_PIPELINE_V1&quot;,
+    &quot;rule_sha256&quot;: &quot;132f35810be964eca2ade1aba93a17154ac3092466c24c0ea5fccb86bc044d7b&quot;,
+    &quot;schema_version&quot;: &quot;GLD_SIMULATION_DECISION_RESULT_V2&quot;,
+    &quot;status&quot;: &quot;SIMULATED_NO_ACTION&quot;,
+    &quot;trading_date&quot;: &quot;2026-08-28&quot;
+  },
+  &quot;risk_context&quot;: {
+    &quot;status&quot;: &quot;NOT_RUN_GATE_FAILED&quot;
+  },
+  &quot;simulation_limitations&quot;: [
+    &quot;SYNTHETIC_INPUTS_ONLY&quot;,
+    &quot;NOT_PROMOTABLE_TO_LIVE_DECISION&quot;,
+    &quot;NO_BROKER_CONNECTION&quot;,
+    &quot;NO_ORDER_CREATION_OR_SUBMISSION&quot;,
+    &quot;LC1_ROLL_UP_NOT_ACTIVE&quot;
+  ]
+}</pre></details>
+    <footer>
+      <p>本文件只呈现程序生成的模拟事实，不是交易建议，不创建券商订单，也不具备下单权限。</p>
+    </footer>
+  </main>
+</body>
+</html>
