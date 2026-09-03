@@ -1,0 +1,1 @@
+{"actionable":false,"authority_status":"NO_DECISION_EFFECT","broker_order_count":0,"classification":"SYNTHETIC_ONLY","inputs":{"gate_count":4,"hard_stop_variants":[333333,500000,666667,null],"quantity_units":1},"real_data_accessed":false,"scenario_id":"registry_16_to_12","schema_version":"GLD_R2_SYNTHETIC_DIAGNOSTIC_INPUT_V1","scope":"RESEARCH_ONLY"}

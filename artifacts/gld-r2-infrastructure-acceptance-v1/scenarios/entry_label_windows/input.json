@@ -1,0 +1,1 @@
+{"actionable":false,"authority_status":"NO_DECISION_EFFECT","broker_order_count":0,"classification":"SYNTHETIC_ONLY","inputs":{"missing_common_rows":5,"qualified_common_rows":95,"total_after_warmup_sessions":240},"real_data_accessed":false,"scenario_id":"entry_label_windows","schema_version":"GLD_R2_SYNTHETIC_DIAGNOSTIC_INPUT_V1","scope":"RESEARCH_ONLY"}

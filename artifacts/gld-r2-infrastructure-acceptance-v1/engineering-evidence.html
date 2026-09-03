@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>R2 工程证据</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "PingFang SC", sans-serif; color: #17202a; background: #f5f7fa; }
+    body { margin: 0; padding: 24px; }
+    main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; } h2 { margin-top: 28px; }
+    p { line-height: 1.65; }
+    .subtitle { margin: 0 0 20px; color: #52616b; font-size: 17px; }
+    .boundary { padding: 14px 16px; border: 1px solid #d35400;
+      border-radius: 10px; background: #fff4e6; font-weight: 650; }
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px; margin: 20px 0; }
+    .metric { padding: 14px; border: 1px solid #d9e1e8; border-radius: 10px;
+      background: white; }
+    .metric span { display: block; color: #52616b; font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+    .owner-grid { display: grid; gap: 16px; grid-template-columns:
+      repeat(auto-fit, minmax(280px, 1fr)); }
+    .owner-card { padding: 18px; border: 1px solid #cbd5df; border-radius: 14px;
+      background: white; box-shadow: 0 2px 8px rgba(22, 32, 42, 0.05); }
+    .owner-card h2 { margin: 0 0 10px; font-size: 20px; }
+    .owner-card p { margin: 0; }
+    .next { margin-top: 22px; padding: 18px; border: 1px solid #9eb8ce;
+      border-radius: 12px; background: #edf6ff; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e1e8; text-align: left;
+      vertical-align: top; overflow-wrap: anywhere; }
+    th { background: #edf2f7; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px; }
+    a { color: #0b62a4; }
+    .pass { color: #155724; font-weight: 700; }
+    .pending { color: #8a4b08; font-weight: 700; }
+  </style>
+</head>
+<body><main>
+<h1>R2 工程证据</h1>
+<p class="subtitle">Wave 1 synthetic-only 可复现证据；Owner 页面不展示这些工程细节。</p>
+<p class="boundary">classification=SYNTHETIC_ONLY / scope=RESEARCH_ONLY / authority_status=NO_DECISION_EFFECT / actionable=false / broker_order_count=0</p>
+<section class="flow">
+  <div class="metric"><span>基础设施状态</span><strong>R2_INFRASTRUCTURE_VERIFIED</strong></div>
+  <div class="metric"><span>真实数据</span><strong>未访问</strong></div>
+  <div class="metric"><span>真实科学终局</span><strong>真实科学终局：未生成</strong></div>
+  <div class="metric"><span>Qualification</span><strong>未生成</strong></div>
+  <div class="metric"><span>Owner receipt</span><strong>Owner receipt：未生成</strong></div>
+</section>
+<h2>Scenario evidence</h2>
+<table><thead><tr><th>Scenario</th><th>Evidence</th><th>Reason</th><th>Expected</th><th>Actual</th><th>Test boundary</th><th>Input</th><th>Result</th></tr></thead><tbody><tr>
+  <td><code>contract_identity</code><br>合同与身份链</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_CONTRACT_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;canonical_round_trip&quot;:true,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;identity_chain&quot;:&quot;NON_CYCLIC&quot;}</code></td>
+  <td><code>{&quot;canonical_round_trip&quot;:true,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;identity_chain&quot;:&quot;NON_CYCLIC&quot;}</code></td>
+  <td>Local canonical and non-cyclic identity only; no theta or qualification.</td>
+  <td><a href="scenarios/contract_identity/input.json">scenarios/contract_identity/input.json</a><br><code>9540cd465a94b2e68cd5aaca54309d4cec19f78d0fb7668f7917228424399aae</code></td>
+  <td><a href="scenarios/contract_identity/result.json">scenarios/contract_identity/result.json</a><br><code>b6053ac065287913d807435ee62965d449741a6a78285e545a6f8c3316c43663</code></td>
+</tr><tr>
+  <td><code>registry_16_to_12</code><br>16 个候选与 12 个可晋升候选</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_REGISTRY_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;control_count&quot;:4,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;promotable_count&quot;:12,&quot;registry_count&quot;:16}</code></td>
+  <td><code>{&quot;control_count&quot;:4,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;promotable_count&quot;:12,&quot;registry_count&quot;:16}</code></td>
+  <td>Synthetic 4 Gate x 4 Hard Stop registry only; no real ranking.</td>
+  <td><a href="scenarios/registry_16_to_12/input.json">scenarios/registry_16_to_12/input.json</a><br><code>d04bb47921f0239bb3330fb8f0a8e8c96e94ac9a391efc202effaaa53c7a078e</code></td>
+  <td><a href="scenarios/registry_16_to_12/result.json">scenarios/registry_16_to_12/result.json</a><br><code>b1c63729d27424792e9f94af7340f128d1d0c1a591e7ff1dbd76d6514e9cb25f</code></td>
+</tr><tr>
+  <td><code>entry_label_windows</code><br>时间窗口与共同数据 mask</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_WINDOW_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;base_entry_sessions&quot;:20,&quot;coverage_ppm&quot;:950000,&quot;development_entry_sessions&quot;:20,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;walk_forward_fold_count&quot;:5}</code></td>
+  <td><code>{&quot;base_entry_sessions&quot;:20,&quot;coverage_ppm&quot;:950000,&quot;development_entry_sessions&quot;:20,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;walk_forward_fold_count&quot;:5}</code></td>
+  <td>Synthetic ENTRY/LABEL20 and common mask only; no market data.</td>
+  <td><a href="scenarios/entry_label_windows/input.json">scenarios/entry_label_windows/input.json</a><br><code>056a5ffec38cd611cb86696ff26746461f69bf5d87012286b2569efe89be486b</code></td>
+  <td><a href="scenarios/entry_label_windows/result.json">scenarios/entry_label_windows/result.json</a><br><code>6f48f3aacbc27bd8067348ff1ec5277195d4050fbdd8d6192592acbbe88ef583</code></td>
+</tr><tr>
+  <td><code>policy_q1_stress</code><br>政策、q=1 与压力路径</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_POLICY_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;bcs0_selector_status&quot;:&quot;PASS&quot;,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;exit_trigger&quot;:&quot;HARD_STOP&quot;,&quot;gate_status&quot;:&quot;PASS&quot;,&quot;lc0_selector_status&quot;:&quot;PASS&quot;,&quot;ledger_entry_return_ppm&quot;:25000,&quot;preferred_carrier&quot;:&quot;BCS0&quot;,&quot;stressed_episode_status&quot;:&quot;PASS&quot;}</code></td>
+  <td><code>{&quot;bcs0_selector_status&quot;:&quot;PASS&quot;,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;exit_trigger&quot;:&quot;HARD_STOP&quot;,&quot;gate_status&quot;:&quot;PASS&quot;,&quot;lc0_selector_status&quot;:&quot;PASS&quot;,&quot;ledger_entry_return_ppm&quot;:25000,&quot;preferred_carrier&quot;:&quot;BCS0&quot;,&quot;stressed_episode_status&quot;:&quot;PASS&quot;}</code></td>
+  <td>Synthetic q=1 selectors, stress, and exit priority only; no order.</td>
+  <td><a href="scenarios/policy_q1_stress/input.json">scenarios/policy_q1_stress/input.json</a><br><code>90daae2c63628899a5f418d05e3631eced5bc8ac842cfeac2aa32af47b7148c9</code></td>
+  <td><a href="scenarios/policy_q1_stress/result.json">scenarios/policy_q1_stress/result.json</a><br><code>8bc465132846bfbfcfa7c55a0175743a284dcf9a79776d4e6a0b4ea0964cb8d9</code></td>
+</tr><tr>
+  <td><code>joint_statistics</code><br>Carrier 与联合统计</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_STATISTICS_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;block_length&quot;:20,&quot;bootstrap_replicates&quot;:10000,&quot;carrier_lower_bound_ppm&quot;:25000,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;joint_candidate_passes&quot;:[true,true],&quot;joint_lower_bounds_ppm&quot;:[20000,30000]}</code></td>
+  <td><code>{&quot;block_length&quot;:20,&quot;bootstrap_replicates&quot;:10000,&quot;carrier_lower_bound_ppm&quot;:25000,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;joint_candidate_passes&quot;:[true,true],&quot;joint_lower_bounds_ppm&quot;:[20000,30000]}</code></td>
+  <td>Synthetic fixed-seed MBB only; no real qualification.</td>
+  <td><a href="scenarios/joint_statistics/input.json">scenarios/joint_statistics/input.json</a><br><code>12828e023ff5a4e164d81000ac5d224069d49d84dcd939ca4e9f4529cc94ce25</code></td>
+  <td><a href="scenarios/joint_statistics/result.json">scenarios/joint_statistics/result.json</a><br><code>dccdb24648b64ed0d2d0900ebb48a075007e4e7d5ec8aa4c5caede71ecd42469</code></td>
+</tr><tr>
+  <td><code>forward_exact_100</code><br>Exact-100 Forward 状态机</td>
+  <td class="pass">AUTOMATED_EVIDENCE_PASS</td>
+  <td><code>SYNTHETIC_FORWARD_DIAGNOSTIC_PASS</code></td>
+  <td><code>{&quot;coverage_ppm&quot;:1000000,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;exact_episode_count&quot;:100,&quot;forward_lower_bound_ppm&quot;:20000,&quot;sealed&quot;:true}</code></td>
+  <td><code>{&quot;coverage_ppm&quot;:1000000,&quot;diagnostic_status&quot;:&quot;PASS&quot;,&quot;exact_episode_count&quot;:100,&quot;forward_lower_bound_ppm&quot;:20000,&quot;sealed&quot;:true}</code></td>
+  <td>Synthetic Exact-100 state machine only; not Forward evidence.</td>
+  <td><a href="scenarios/forward_exact_100/input.json">scenarios/forward_exact_100/input.json</a><br><code>6a35ce2bb076bfc3ff16989856190abff4769bfda31af138b03c34ffb492ba9b</code></td>
+  <td><a href="scenarios/forward_exact_100/result.json">scenarios/forward_exact_100/result.json</a><br><code>a4921c64a3fc48fe566e2b0169f5114cef8f341451d3a9e061ed9ec349ab81e8</code></td>
+</tr></tbody></table>
+<h2>R1 byte regression</h2>
+<p>Status: <strong class="pass">R1_ACCEPTED_BYTES_UNCHANGED</strong>；accepted commit: <code>b21400d799f7b441d35f528a5980b1ce855997a7</code></p>
+<table><thead><tr><th>Asset</th><th>Status</th><th>SHA-256</th></tr></thead><tbody><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/acceptance-manifest.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>f0004cdb593121f1cb41f632f4b36c3399fe5d380d938e909f0cd4bcf02141a2</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/bcs_only/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>7ce04090f02de99891ecdd0aaaecbb00e71659912d33a36c4af8dc566064de3b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/bcs_only/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>752a9002bc098ebbe364b8f0857b8e71290170cf3bdb6dde7eb3df14b66a88fe</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/bcs_only/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>822724481b5f4222262ad13faf368b95c13042a355d150b84d115d908d87dc3d</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/bcs_only/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>e29b95cacfbe5ba7fbeb41c6994d33856b9ef1503391b525dba8b2520c6042ab</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/both_qualified/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>e8afbae3b0b420229d6806e6b9fc141db79d2965d5db01f9d7d046ed00316ddd</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/both_qualified/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>47916f4f0853ee1445bb2f7ca896d79386b56297e2e7090117de1b702b89e4b7</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/both_qualified/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>1eb183a97de60e948a880748115cc4808c966c8a9d38f660d49dae9fbccf0712</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/both_qualified/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>9ce5a0755c474ee6c0280ce18bb13552ad9051e02e5110f8a9ce2e5614b917fd</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/engineering-evidence.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>6a96bcbacd7d121bffa2fcf5b6d3f243096936181c0bbc9d431032adf14ec35f</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/base/bcs0-evidence-receipt-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>97cf21d9afe2b85061b8c0cbd9e419c1252df94206b0127572830862e2e64132</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/base/historical-structure-evidence-bundle-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>b68e350bf589d37e46eb4652e8ef8023c26db7922c35e601fa4842db14520e78</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/base/historical-structure-evidence-input-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>139ef317bc57884d2eb60940ce5ff6b6ade5abca0b70d6eb426313982d943058</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/base/lc0-evidence-receipt-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>d3b7cad017b790d9b4ceb18b7f2d617138e9cebf4fb5b5bc26cb3d7d51c3d8bb</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/exact-tie/bcs0-evidence-receipt-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>47e6a8c8ae76ff4155111aaa340046c2bac66ea637fc2b60156c916f1fcc3318</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/exact-tie/historical-structure-evidence-bundle-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>30bb3d6969383b6c5c122823ef60223bbe7ffd20cfe9db3cf6139c421a5f9d47</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/exact-tie/historical-structure-evidence-input-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>431f2ffb59241b865feb9b49a9c2f2eb537b4f7092234b5616813d28e17a4168</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/evidence/exact-tie/lc0-evidence-receipt-v2.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>747d3cbc99340bef1eeb94dc14d4cba37d69190338b6a85c65732abe65e05365</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/exact_tie/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>aac83929c564b1c0a95719ab6dc0f5ad7c23dfcbd44c55ca6027deeb9f09458b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/exact_tie/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>dbc5c871963fd2d5d1d18dcb0f6cc4cae80ee331b2dbb1e8b1ab225cafbd747c</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/exact_tie/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>a06f872e4cb6b093c3540b2e004a655f630588678c5e462fbbbbbe481e31e83c</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/exact_tie/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>746fba0cb6f1f8d97e9ff7fade64b481812a6b4c479885312b189f0f9be3a889</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/gate_fail/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>a7996d0d57ec5eeccd1db93dd448ef5ce434891744e25b2627c4769a8822709b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/gate_fail/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>0967e46d343ca4d0c6b12c042c5ac11ec0944d92c25370f56b5fd5ebd0350ba4</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/gate_fail/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>83a391de4d15a4986bb773d71905460dcac49372ddf28137a6c3668f686bb04e</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/gate_fail/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>b1a7d31943a7934515aeea899893f43ccfe2d4520d9fa7f5032f0ea7397d6d04</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/index.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>5590a21a5fbccc34a1ce495484f9ec16b8c29c89b10def6349c59ed6d28aa18b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/lc_only/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>440687b4e333d163e7869a668ed58d42ec03e6a627942d2c443d77d89c96a17b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/lc_only/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>ed3b88c559cf61433ae014b21ff229d8f0a41d60abf54c35222b72da04114b9d</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/lc_only/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>bf78b71b5aea66b58e58693afc409351346e6d9a894e577c2b7593bb8b6b0390</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/lc_only/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>2aa26dd5a2e442a8eadd36e2adfb7e2427d9eec895fa07e31c8b6ec301babecb</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/missing_input/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>bee179f750189c63e291a9858c228876f28c1fbd3f6afa00921a59072179954b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/missing_input/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>a68b83e047bb553533ec1535fc76e81bd7858e13893d52744f818ded9cc80661</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/missing_input/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>83dd311d14de300b319be3fcbbf6c9502cf2663ba95a8883081ad385e784284b</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/missing_input/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>1343c48fe50b11699c8486ce731b76c6e6f639f820aeabfb951a3583e7760467</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/policy_missing/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>09c14f77deeb07eb0d2375061cbe00c7c965ab39413fac9728760e44fde29cf0</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/policy_missing/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>cd705ac6e48c676d47268d1faf8160eda7eda0d105631b5cdfc9ee9772bcf235</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/policy_missing/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>9aab7fa383fd4ea3e9c0f44e7929bc851745868ae43ae2f4109525f6d09382ba</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/policy_missing/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>cbc9b60e01b131e3cbbe3332c92c04381cf89e91a529df2829057b4830294b50</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/reference/GLD_ENTRY_DECISION_F0_SPEC.md</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>240c6dc5df135c1062db067ad6c8e215fa39a041403a488e1aed32c0f9d83c81</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/reference/GLD_ENTRY_POLICY_RESEARCH_ASSET_F0.md</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>1541636445c029602f7b0356b03b4149a4e8b7fb1cda545dd8b5664218ed082e</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/zero_cap/decision-trace-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>3f542d9b393cf39301f5b249bd84ab727c5e6faaa6430be0e1b38f310692cd72</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/zero_cap/entry-decision-input-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>2e5cc56011f936ab07393ad0c7f2f79cf63925cd013374d182c54d0d97c0aca8</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/zero_cap/entry-decision-result-f0.json</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>d6eaf169aaec4ac843a5537e018a610b4a41321d2ea676c0572feb5f097a595a</code></td></tr><tr><td>artifacts/gld-entry-decision-f0-owner-acceptance-v1/zero_cap/final-decision-card.html</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>b43b1c8aa872d10b725ea30bf533a43df05faae26e3a262b791352cd14f0496f</code></td></tr><tr><td>2026-09-01-2157-gld-entry-decision-f0-owner-acceptance-receipt-v0.1.md</td><td class="pass">BYTE_IDENTICAL</td>
+<td><code>e894aa5777a5f7b2179eb4dc3ebd8b80f12c3e80d74c2c2adca312cdb3d36231</code></td></tr></tbody></table>
+<h2>Determinism receipt</h2>
+<p><strong class="pass">REPEATED_SYNTHETIC_DIAGNOSTICS_BYTE_IDENTICAL</strong></p>
+<p>first=<code>9e84fe872d2653c5c8752b5a2ad9f696bd3b7196710f20c73c855e9722c6fc7b</code><br>second=<code>9e84fe872d2653c5c8752b5a2ad9f696bd3b7196710f20c73c855e9722c6fc7b</code></p>
+<h2>Manifest</h2>
+<p>Manifest 自身的 seal 与 rendered file hashes 保存在 canonical JSON 中，避免页面 hash 形成自引用。</p>
+<p><a href="acceptance-manifest.json">查看 canonical acceptance manifest</a> · <a href="index.html">返回 Owner 页面</a></p></main></body>
+</html>
